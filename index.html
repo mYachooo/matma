@@ -4,16 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Matematyka – Fiszki</title>
-<meta name="description" content="Fiszki matematyczne dla klas 1–5. Tabliczka mnożenia, dzielenie, ułamki i geometria.">
+<meta name="description" content="Fiszki matematyczne dla klas 1–5.">
 <meta name="theme-color" content="#0f0e17">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Matma">
 <link rel="manifest" href="manifest.json">
-<!-- Apple touch icon (inline SVG as data URI fallback) -->
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" type="image/png" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0f0e17;--cb:#1a1a2e;--sf:#232338;--a1:#ff6b6b;--a2:#ffd93d;--a3:#6bcb77;--a4:#4d96ff;--pu:#c94bff;--tx:#fffffe;--mu:#a7a9be;--r:20px;}
@@ -34,8 +32,6 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .brow{display:flex;align-items:center;gap:10px;align-self:flex-start;margin-bottom:16px;}
 .bk{width:38px;height:38px;border-radius:50%;background:var(--sf);border:none;color:var(--tx);font-size:1rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s;flex-shrink:0;}
 .bk:active{background:#3a3a5e;}
-
-/* ── PROFILE SCREEN ── */
 .plist{display:flex;flex-direction:column;gap:8px;width:100%;margin-bottom:16px;}
 .pcard{display:flex;align-items:center;gap:12px;background:var(--cb);border:2px solid transparent;border-radius:var(--r);padding:12px 14px;cursor:pointer;width:100%;color:var(--tx);transition:all .2s;}
 .pcard:active{transform:scale(.98);}
@@ -46,15 +42,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .pmeta{font-size:.7rem;color:var(--mu);font-weight:600;}
 .pxp{font-family:'Righteous',cursive;font-size:.82rem;color:var(--pu);}
 .pdel{background:none;border:none;color:var(--a1);font-size:1rem;cursor:pointer;padding:4px 6px;opacity:.6;}
-.pdel:active{opacity:1;}
 .add-btn{width:100%;padding:12px;border:2px dashed var(--sf);border-radius:var(--r);background:transparent;color:var(--mu);font-family:'Nunito',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;margin-bottom:12px;}
 .add-btn:active{background:var(--sf);}
 .mbtn{width:100%;padding:14px;border:none;border-radius:var(--r);background:linear-gradient(135deg,var(--a4),var(--a3));color:#0f0e17;font-family:'Righteous',cursive;font-size:1.15rem;cursor:pointer;transition:transform .15s;box-shadow:0 6px 22px rgba(77,150,255,.25);}
 .mbtn:active{transform:scale(.97);}
 .mbtn.red{background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 6px 22px rgba(255,107,107,.25);}
 .mbtn:disabled{opacity:.4;cursor:default;}
-
-/* ── MODAL ── */
+/* MODAL */
 .mbg{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;z-index:200;padding:18px;}
 .mbg.hidden{display:none;}
 .mod{background:var(--cb);border-radius:var(--r);padding:20px 16px;width:100%;max-width:360px;max-height:90dvh;overflow-y:auto;}
@@ -62,9 +56,10 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .mod input{width:100%;padding:11px 13px;background:var(--sf);border:2px solid transparent;border-radius:13px;color:var(--tx);font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;outline:none;margin-bottom:11px;}
 .mod input:focus{border-color:var(--a4);}
 .avrow{display:flex;gap:7px;justify-content:center;margin-bottom:13px;flex-wrap:wrap;}
-.avo{width:42px;height:42px;border-radius:50%;background:var(--sf);border:2px solid transparent;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;}
+.avo{width:42px;height:42px;border-radius:50%;background:var(--sf);border:2px solid transparent;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;}
 .avo.s{border-color:var(--a4);background:#4d96ff22;}
-/* Class picker inside modal */
+.avo.locked{opacity:.35;cursor:default;}
+.avo .lock-badge{position:absolute;bottom:-2px;right:-2px;font-size:.6rem;background:var(--sf);border-radius:50%;width:14px;height:14px;display:flex;align-items:center;justify-content:center;}
 .cls-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;width:100%;margin-bottom:13px;}
 .cls-opt{padding:9px 4px;border:2px solid var(--sf);border-radius:12px;background:transparent;color:var(--mu);font-family:'Righteous',cursive;font-size:.78rem;cursor:pointer;text-align:center;transition:all .2s;}
 .cls-opt.s{border-color:var(--sel-c);background:color-mix(in srgb,var(--sel-c) 12%,transparent);color:var(--sel-c);}
@@ -76,8 +71,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .mbtns{display:flex;gap:8px;}
 .mcan{flex:1;padding:11px;border:2px solid var(--sf);border-radius:13px;background:transparent;color:var(--mu);font-family:'Righteous',cursive;font-size:.88rem;cursor:pointer;}
 .mok{flex:1;padding:11px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--a4),var(--a3));color:#0f0e17;font-family:'Righteous',cursive;font-size:.88rem;cursor:pointer;}
-
-/* ── XP BAR ── */
+/* XP */
 .xpw{width:100%;background:var(--sf);border-radius:var(--r);padding:11px 13px;margin-bottom:14px;}
 .xptop{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
 .xprnk{font-family:'Righteous',cursive;font-size:.9rem;}
@@ -85,8 +79,12 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .xpbar{height:6px;background:#2a2a3e;border-radius:99px;overflow:hidden;margin-bottom:3px;}
 .xpfill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pu),var(--a4));transition:width .5s;}
 .xplbl{font-size:.65rem;color:var(--mu);font-weight:700;text-align:right;}
-
-/* ── CAT LIST ── */
+/* BADGES ROW */
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;width:100%;margin-bottom:12px;}
+.badge{background:var(--sf);border-radius:99px;padding:5px 10px;font-size:.72rem;font-weight:800;display:flex;align-items:center;gap:4px;border:1px solid transparent;}
+.badge.new{border-color:var(--a2);background:#ffd93d18;animation:badgePop .4s cubic-bezier(.34,1.56,.64,1);}
+@keyframes badgePop{from{transform:scale(0);}to{transform:scale(1);}}
+/* CAT */
 .clist{display:flex;flex-direction:column;gap:7px;width:100%;margin-bottom:14px;}
 .cbtn{display:flex;align-items:center;gap:11px;background:var(--cb);border:2px solid transparent;border-radius:var(--r);padding:11px 13px;cursor:pointer;text-align:left;width:100%;color:var(--tx);transition:all .2s;}
 .cbtn:active{transform:scale(.98);}
@@ -100,20 +98,18 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .brow2{display:flex;gap:8px;width:100%;margin-bottom:10px;}
 .ibtn{flex:1;padding:10px 6px;border:2px solid var(--sf);border-radius:var(--r);background:transparent;color:var(--mu);font-family:'Nunito',sans-serif;font-weight:800;font-size:.76rem;cursor:pointer;}
 .ibtn:active{background:var(--sf);}
-
-/* ── DIFF SCREEN ── */
+/* DIFF */
 .chcat{display:flex;align-items:center;gap:11px;background:var(--sf);border-radius:var(--r);padding:12px 14px;width:100%;margin-bottom:14px;}
-/* Class badge on diff screen */
 .cls-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:99px;font-family:'Righteous',cursive;font-size:.82rem;margin-bottom:16px;align-self:flex-start;border:2px solid;}
 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;margin-bottom:16px;}
 .dc{background:var(--cb);border:2px solid transparent;border-radius:var(--r);padding:14px 10px;cursor:pointer;text-align:center;position:relative;overflow:hidden;transition:all .2s;}
 .dc::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;border-radius:inherit;}
 .dc.sel{border-color:var(--dcc);}
 .dc.sel::before{opacity:1;}
-.dc[data-d="easy"]  {--dcc:var(--a3);} .dc[data-d="easy"]::before  {background:linear-gradient(135deg,#6bcb7720,#4d96ff20);}
-.dc[data-d="medium"]{--dcc:var(--a2);} .dc[data-d="medium"]::before{background:linear-gradient(135deg,#ffd93d20,#ff6b6b20);}
-.dc[data-d="hard"]  {--dcc:var(--a1);} .dc[data-d="hard"]::before  {background:linear-gradient(135deg,#ff6b6b20,#c94bff20);}
-.dc[data-d="legend"]{--dcc:var(--pu);} .dc[data-d="legend"]::before{background:linear-gradient(135deg,#c94bff20,#4d96ff20);}
+.dc[data-d="easy"]  {--dcc:var(--a3);}.dc[data-d="easy"]::before  {background:linear-gradient(135deg,#6bcb7720,#4d96ff20);}
+.dc[data-d="medium"]{--dcc:var(--a2);}.dc[data-d="medium"]::before{background:linear-gradient(135deg,#ffd93d20,#ff6b6b20);}
+.dc[data-d="hard"]  {--dcc:var(--a1);}.dc[data-d="hard"]::before  {background:linear-gradient(135deg,#ff6b6b20,#c94bff20);}
+.dc[data-d="legend"]{--dcc:var(--pu);}.dc[data-d="legend"]::before{background:linear-gradient(135deg,#c94bff20,#4d96ff20);}
 .dcico{font-size:1.6rem;margin-bottom:5px;}
 .dcnm{font-family:'Righteous',cursive;font-size:.9rem;margin-bottom:2px;}
 .dcrng{font-size:.62rem;color:var(--mu);font-weight:700;line-height:1.4;}
@@ -124,8 +120,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .otog{flex:1;padding:9px 4px;border:2px solid var(--sf);border-radius:99px;background:transparent;color:var(--mu);font-family:'Nunito',sans-serif;font-weight:800;font-size:.72rem;cursor:pointer;transition:all .2s;text-align:center;}
 .otog.on{border-color:var(--a3);background:#6bcb7718;color:var(--a3);}
 .otog.rv{border-color:var(--pu);background:#c94bff18;color:var(--pu);}
-
-/* ── GAME ── */
+/* GAME */
 #sg{justify-content:flex-start;}
 .ghdr{display:flex;align-items:center;gap:8px;width:100%;padding:13px 0 11px;flex-shrink:0;}
 .pw{flex:1;}
@@ -163,10 +158,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .fla{display:flex;gap:7px;}
 .fb{flex:1;padding:12px;border:2px solid;border-radius:13px;background:transparent;font-family:'Righteous',cursive;font-size:.82rem;cursor:pointer;}
 .fb:active{transform:scale(.96);}
-.fb.n{border-color:var(--a1);color:var(--a1);}  .fb.y{border-color:var(--a3);color:var(--a3);}
+.fb.n{border-color:var(--a1);color:var(--a1);}.fb.y{border-color:var(--a3);color:var(--a3);}
 .fb.n:active{background:#ff6b6b18;}.fb.y:active{background:#6bcb7718;}
-
-/* ── RESULTS ── */
+/* RESULTS */
 .rico{font-size:3.6rem;margin-bottom:11px;animation:pop .5s cubic-bezier(.34,1.56,.64,1);}
 .rtit{font-family:'Righteous',cursive;font-size:1.75rem;text-align:center;margin-bottom:4px;}
 .rsub{color:var(--mu);font-size:.82rem;text-align:center;font-weight:700;margin-bottom:16px;}
@@ -177,6 +171,10 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .xpg{background:var(--sf);border-radius:var(--r);padding:10px 13px;width:100%;margin-bottom:11px;text-align:center;}
 .xpgn{font-family:'Righteous',cursive;font-size:1.25rem;color:var(--pu);}
 .xpgl{font-size:.7rem;color:var(--mu);font-weight:700;}
+/* NEW BADGES on results */
+.new-badges-box{width:100%;background:var(--sf);border-radius:var(--r);padding:12px 14px;margin-bottom:11px;}
+.new-badges-ttl{font-family:'Righteous',cursive;font-size:.82rem;color:var(--a2);margin-bottom:8px;}
+.new-badges-list{display:flex;gap:7px;flex-wrap:wrap;}
 .tsc{display:flex;gap:8px;width:100%;margin-bottom:11px;}
 .tb{flex:1;border-radius:13px;padding:12px;text-align:center;}
 .tb.p1b{background:#4d96ff18;border:2px solid var(--a4);}
@@ -188,15 +186,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .rtb:active{transform:scale(.97);}
 .rmb{padding:11px;border:2px solid var(--sf);border-radius:var(--r);background:transparent;color:var(--mu);font-family:'Righteous',cursive;font-size:.88rem;cursor:pointer;}
 .rmb:active{background:var(--sf);}
-
-/* ── HISTORY ── */
+/* HISTORY */
 .he{width:100%;background:var(--cb);border-radius:var(--r);padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;}
 .hi{flex:1;}
 .ht{font-family:'Righteous',cursive;font-size:.85rem;margin-bottom:1px;}
 .hb{font-size:.67rem;color:var(--mu);font-weight:600;}
 .hp{font-family:'Righteous',cursive;font-size:1rem;}
-
-/* ── CHEATSHEET ── */
+/* CHEATSHEET */
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%;margin-bottom:10px;}
 .fcard{background:var(--cb);border-radius:var(--r);padding:13px 10px;text-align:center;cursor:pointer;border:2px solid transparent;transition:all .2s;}
 .fcard.open{border-color:var(--a4);}
@@ -212,23 +208,57 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 .flbl{font-size:.67rem;font-weight:800;color:var(--mu);min-width:52px;margin-top:2px;flex-shrink:0;}
 .fval{font-family:'Righteous',cursive;font-size:.9rem;color:var(--a2);}
 .fex{font-size:.67rem;color:var(--mu);font-weight:700;margin-top:2px;}
-
-/* TOAST / CONFETTI */
+/* PARTICLE canvas */
 #cc{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
+/* CARD PARTICLE overlay */
+#cpart{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:500;}
 .tst{position:fixed;bottom:65px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--pu);color:#fff;font-family:'Righteous',cursive;font-size:.9rem;padding:8px 18px;border-radius:99px;opacity:0;transition:all .4s;z-index:998;pointer-events:none;white-space:nowrap;}
 .tst.sh{opacity:1;transform:translateX(-50%) translateY(0);}
+/* BADGE SCREEN */
+.badge-item{background:var(--cb);border-radius:var(--r);padding:13px 14px;margin-bottom:8px;width:100%;display:flex;align-items:center;gap:12px;}
+.badge-item.earned{border:1px solid var(--a2);}
+.badge-item.locked{opacity:.45;}
+.badge-ico{font-size:1.8rem;flex-shrink:0;}
+.badge-inf{flex:1;}
+.badge-nm{font-family:'Righteous',cursive;font-size:.9rem;margin-bottom:2px;}
+.badge-ds{font-size:.68rem;color:var(--mu);font-weight:600;}
+.badge-earned-lbl{font-size:.65rem;font-weight:800;color:var(--a2);}
+/* UNLOCK MODAL */
+.unlock-modal{position:fixed;inset:0;background:#000c;display:flex;align-items:center;justify-content:center;z-index:300;padding:24px;}
+.unlock-modal.hidden{display:none;}
+.unlock-box{background:var(--cb);border-radius:var(--r);padding:28px 20px;width:100%;max-width:320px;text-align:center;animation:pop .45s cubic-bezier(.34,1.56,.64,1);}
+.unlock-ico{font-size:4rem;margin-bottom:12px;}
+.unlock-ttl{font-family:'Righteous',cursive;font-size:1.4rem;color:var(--a2);margin-bottom:6px;}
+.unlock-sub{font-size:.85rem;color:var(--mu);font-weight:700;margin-bottom:20px;}
+.unlock-ok{width:100%;padding:13px;border:none;border-radius:13px;background:linear-gradient(135deg,var(--a4),var(--a3));color:#0f0e17;font-family:'Righteous',cursive;font-size:1rem;cursor:pointer;}
 @keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
 .shk{animation:shk .38s;}
 @keyframes shk{0%,100%{transform:translateX(0);}22%{transform:translateX(-9px);}55%{transform:translateX(9px);}80%{transform:translateX(-5px);}}
+/* Card flash animations */
+@keyframes flashGreen{0%,100%{box-shadow:none;}30%{box-shadow:0 0 0 4px #6bcb7766,0 0 24px #6bcb7744;}}
+@keyframes flashRed{0%,100%{box-shadow:none;}30%{box-shadow:0 0 0 4px #ff6b6b66,0 0 24px #ff6b6b44;}}
+.flash-ok{animation:flashGreen .5s ease;}
+.flash-no{animation:flashRed .5s ease;}
 .hidden{display:none!important;}
 </style>
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
 <canvas id="cc"></canvas>
+<canvas id="cpart"></canvas>
 <div class="tst" id="tst"></div>
 
-<!-- ═══ MODAL: NOWY PROFIL ═══ -->
+<!-- UNLOCK MODAL -->
+<div class="unlock-modal hidden" id="unmod">
+  <div class="unlock-box">
+    <div class="unlock-ico" id="un-ico">🎉</div>
+    <div class="unlock-ttl" id="un-ttl">Odblokowano!</div>
+    <div class="unlock-sub" id="un-sub">Nowa nagroda</div>
+    <button class="unlock-ok" onclick="closeUnlock()">Super! 🎉</button>
+  </div>
+</div>
+
+<!-- MODAL: NOWY PROFIL -->
 <div class="mbg hidden" id="mbg">
   <div class="mod">
     <div class="modttl">👤 Nowy profil</div>
@@ -244,7 +274,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
   </div>
 </div>
 
-<!-- ═══ SCREEN 1: PROFIL ═══ -->
+<!-- SCREEN 1: PROFIL -->
 <div class="screen" id="sp">
 <div class="si">
   <div class="ttl">🧮 Matematyka</div>
@@ -256,10 +286,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 </div>
 </div>
 
-<!-- ═══ SCREEN 2: KATEGORIA ═══ -->
+<!-- SCREEN 2: KATEGORIA -->
 <div class="screen hidden" id="sc">
 <div class="si">
-  <!-- player header -->
   <div style="width:100%;display:flex;align-items:center;gap:10px;margin-bottom:12px;">
     <div id="hdrav" style="width:38px;height:38px;border-radius:50%;background:var(--sf);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0;"></div>
     <div style="flex:1;">
@@ -268,12 +297,13 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
     </div>
     <button class="bk" onclick="showScreen('sp')" style="width:32px;height:32px;font-size:.85rem;">↩</button>
   </div>
-  <!-- XP -->
   <div class="xpw">
     <div class="xptop"><span class="xprnk" id="xprnk">🎓 Uczeń</span><span class="xpst" id="xpst">🔥 0 dni</span></div>
     <div class="xpbar"><div class="xpfill" id="xpfill" style="width:0%"></div></div>
     <div class="xplbl" id="xplbl">0 / 100 XP</div>
   </div>
+  <div class="lbl">Odznaki</div>
+  <div class="badge-row" id="badge-row"></div>
   <div class="lbl">Kategoria</div>
   <div class="clist" id="clist">
     <button class="cbtn sel" data-cat="mult" style="--cc:#ffd93d" onclick="selCatFn(this)">
@@ -297,20 +327,18 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
   </div>
   <div class="brow2">
     <button class="ibtn" onclick="showHist()">📋 Historia</button>
-    <button class="ibtn" onclick="showCS()" style="color:var(--a2);border-color:var(--a2)">📐 Wzory</button>
+    <button class="ibtn" onclick="showBadges()" style="color:var(--a2);border-color:var(--a2)">🏅 Odznaki</button>
+    <button class="ibtn" onclick="showCS()" style="color:var(--a4);border-color:var(--a4)">📐 Wzory</button>
   </div>
   <button class="mbtn" onclick="goDiff()">Dalej →</button>
 </div>
 </div>
 
-<!-- ═══ SCREEN 3: TRUDNOŚĆ ═══ -->
+<!-- SCREEN 3: TRUDNOŚĆ -->
 <div class="screen hidden" id="sd">
 <div class="si">
   <div class="brow"><button class="bk" onclick="showScreen('sc')">←</button><span style="font-weight:700;color:var(--mu);font-size:.85rem">Zmień kategorię</span></div>
-  <div class="chcat">
-    <span style="font-size:1.6rem" id="ccico">✖️</span>
-    <span style="font-family:'Righteous',cursive;font-size:.95rem" id="ccnm">Tabliczka mnożenia</span>
-  </div>
+  <div class="chcat"><span style="font-size:1.6rem" id="ccico">✖️</span><span style="font-family:'Righteous',cursive;font-size:.95rem" id="ccnm">Tabliczka mnożenia</span></div>
   <div class="cls-badge" id="cls-badge"></div>
   <div class="lbl">Poziom trudności</div>
   <div class="dgrid" id="dgrid"></div>
@@ -330,7 +358,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 </div>
 </div>
 
-<!-- ═══ SCREEN 4: GRA ═══ -->
+<!-- SCREEN 4: GRA -->
 <div class="screen hidden" id="sg">
   <div class="ghdr">
     <button class="bk" onclick="goMenu()">←</button>
@@ -359,7 +387,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
   </div>
 </div>
 
-<!-- ═══ SCREEN 5: WYNIKI ═══ -->
+<!-- SCREEN 5: WYNIKI -->
 <div class="screen hidden" id="sr">
 <div class="si" style="justify-content:center;min-height:100dvh;">
   <div class="rico" id="rico">🏆</div>
@@ -372,6 +400,10 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
       <div class="sb"><div class="sv" id="spc" style="color:var(--a2)">0%</div><div class="sl">Wynik</div></div>
     </div>
     <div class="xpg"><div class="xpgn" id="xpgn">+0 XP</div><div class="xpgl" id="xpgl">Zdobyte doświadczenie</div></div>
+    <div class="new-badges-box hidden" id="new-badges-box">
+      <div class="new-badges-ttl">🎉 Nowe odznaki!</div>
+      <div class="new-badges-list" id="new-badges-list"></div>
+    </div>
   </div>
   <div class="tsc hidden" id="tpst">
     <div class="tb p1b"><div class="tbn">Gracz 1</div><div class="tbs" id="rp1" style="color:var(--a4)">0</div></div>
@@ -384,7 +416,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 </div>
 </div>
 
-<!-- ═══ SCREEN 6: HISTORIA ═══ -->
+<!-- SCREEN 6: HISTORIA -->
 <div class="screen hidden" id="sh">
 <div class="si">
   <div class="brow"><button class="bk" onclick="showScreen('sc')">←</button><span style="font-weight:700;color:var(--mu);font-size:.85rem">Powrót</span></div>
@@ -393,7 +425,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 </div>
 </div>
 
-<!-- ═══ SCREEN 7: ŚCIĄGAWKA ═══ -->
+<!-- SCREEN 7: ŚCIĄGAWKA -->
 <div class="screen hidden" id="scs">
 <div class="si">
   <div class="brow"><button class="bk" onclick="showScreen('sc')">←</button><span style="font-weight:700;color:var(--mu);font-size:.85rem">Powrót</span></div>
@@ -401,75 +433,37 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
   <div class="sub">Kliknij figurę, żeby zobaczyć wzory</div>
   <div class="fgrid">
     <div class="fcard" id="fc-k" onclick="togFig('k')">
-      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="8" width="54" height="54" rx="3" fill="#4d96ff18" stroke="#4d96ff" stroke-width="2.5"/>
-        <text x="37" y="39" text-anchor="middle" font-family="Nunito,sans-serif" font-size="11" fill="#4d96ff" font-weight="800">a</text>
-        <text x="37" y="70" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text>
-        <text x="4" y="38" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text>
-      </svg>
+      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="8" width="54" height="54" rx="3" fill="#4d96ff18" stroke="#4d96ff" stroke-width="2.5"/><text x="37" y="39" text-anchor="middle" font-family="Nunito,sans-serif" font-size="11" fill="#4d96ff" font-weight="800">a</text><text x="37" y="70" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text><text x="4" y="38" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text></svg>
       <div class="fnm">Kwadrat</div><div class="ftap">dotknij ▼</div>
     </div>
     <div class="fcard" id="fc-p" onclick="togFig('p')">
-      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg">
-        <rect x="5" y="18" width="70" height="38" rx="3" fill="#6bcb7718" stroke="#6bcb77" stroke-width="2.5"/>
-        <text x="40" y="41" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">b (długość)</text>
-        <text x="77" y="40" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text>
-      </svg>
+      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="18" width="70" height="38" rx="3" fill="#6bcb7718" stroke="#6bcb77" stroke-width="2.5"/><text x="40" y="41" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">b</text><text x="77" y="40" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text></svg>
       <div class="fnm">Prostokąt</div><div class="ftap">dotknij ▼</div>
     </div>
     <div class="fcard" id="fc-t" onclick="togFig('t')">
-      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="40,6 74,68 6,68" fill="#ffd93d18" stroke="#ffd93d" stroke-width="2.5"/>
-        <line x1="40" y1="6" x2="40" y2="68" stroke="#ffd93d" stroke-width="1.5" stroke-dasharray="3,2.5"/>
-        <text x="46" y="42" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">h</text>
-        <text x="40" y="72" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text>
-      </svg>
+      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg"><polygon points="40,6 74,68 6,68" fill="#ffd93d18" stroke="#ffd93d" stroke-width="2.5"/><line x1="40" y1="6" x2="40" y2="68" stroke="#ffd93d" stroke-width="1.5" stroke-dasharray="3,2.5"/><text x="46" y="42" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">h</text><text x="40" y="72" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text></svg>
       <div class="fnm">Trójkąt</div><div class="ftap">dotknij ▼</div>
     </div>
     <div class="fcard" id="fc-tp" onclick="togFig('tp')">
-      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="8,68 8,10 72,68" fill="#c94bff18" stroke="#c94bff" stroke-width="2.5"/>
-        <rect x="8" y="58" width="10" height="10" fill="none" stroke="#c94bff" stroke-width="2"/>
-        <text x="4" y="42" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text>
-        <text x="38" y="72" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">b</text>
-        <text x="47" y="36" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">c</text>
-      </svg>
+      <svg viewBox="0 0 80 72" width="58" height="52" xmlns="http://www.w3.org/2000/svg"><polygon points="8,68 8,10 72,68" fill="#c94bff18" stroke="#c94bff" stroke-width="2.5"/><rect x="8" y="58" width="10" height="10" fill="none" stroke="#c94bff" stroke-width="2"/><text x="4" y="42" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">a</text><text x="38" y="72" text-anchor="middle" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">b</text><text x="47" y="36" font-family="Nunito,sans-serif" font-size="9" fill="#a7a9be">c</text></svg>
       <div class="fnm">Trójkąt prostokątny</div><div class="ftap">dotknij ▼</div>
     </div>
   </div>
-  <div class="fdet" id="fd-k">
-    <div class="fdtit" style="color:var(--a4)">📦 Kwadrat</div>
-    <div class="fform">
-      <div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = a × a = a²</div><div class="fex">np. a = 5 → P = 25</div></div></div>
-      <div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = 4 × a</div><div class="fex">np. a = 5 → O = 20</div></div></div>
-      <div class="frow"><div class="flbl">Boki</div><div><div class="fval" style="font-size:.82rem">Wszystkie 4 boki równe</div></div></div>
-    </div>
-  </div>
-  <div class="fdet" id="fd-p">
-    <div class="fdtit" style="color:var(--a3)">▬ Prostokąt</div>
-    <div class="fform">
-      <div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = a × b</div><div class="fex">np. a=4, b=6 → P=24</div></div></div>
-      <div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = 2 × (a + b)</div><div class="fex">np. a=4, b=6 → O=20</div></div></div>
-      <div class="frow"><div class="flbl">Uwaga</div><div><div class="fval" style="font-size:.82rem">a — szerokość, b — długość</div></div></div>
-    </div>
-  </div>
-  <div class="fdet" id="fd-t">
-    <div class="fdtit" style="color:var(--a2)">△ Trójkąt</div>
-    <div class="fform">
-      <div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = (a × h) ÷ 2</div><div class="fex">np. a=8, h=5 → P=20</div></div></div>
-      <div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = a + b + c</div><div class="fex">np. 3+4+5=12</div></div></div>
-      <div class="frow"><div class="flbl">h</div><div><div class="fval" style="font-size:.8rem">h = wysokość ⊥ podstawy</div></div></div>
-    </div>
-  </div>
-  <div class="fdet" id="fd-tp">
-    <div class="fdtit" style="color:var(--pu)">◺ Trójkąt prostokątny</div>
-    <div class="fform">
-      <div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = (a × b) ÷ 2</div><div class="fex">np. a=3, b=4 → P=6</div></div></div>
-      <div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = a + b + c</div><div class="fex">c — najdłuższy bok</div></div></div>
-      <div class="frow"><div class="flbl">Pitagoras</div><div><div class="fval">c² = a² + b²</div><div class="fex">3²+4²=25 → c=5</div></div></div>
-    </div>
-  </div>
+  <div class="fdet" id="fd-k"><div class="fdtit" style="color:var(--a4)">📦 Kwadrat</div><div class="fform"><div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = a × a = a²</div><div class="fex">np. a = 5 → P = 25</div></div></div><div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = 4 × a</div><div class="fex">np. a = 5 → O = 20</div></div></div></div></div>
+  <div class="fdet" id="fd-p"><div class="fdtit" style="color:var(--a3)">▬ Prostokąt</div><div class="fform"><div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = a × b</div><div class="fex">np. a=4, b=6 → P=24</div></div></div><div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = 2 × (a + b)</div><div class="fex">np. a=4, b=6 → O=20</div></div></div></div></div>
+  <div class="fdet" id="fd-t"><div class="fdtit" style="color:var(--a2)">△ Trójkąt</div><div class="fform"><div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = (a × h) ÷ 2</div><div class="fex">np. a=8, h=5 → P=20</div></div></div><div class="frow"><div class="flbl">Obwód</div><div><div class="fval">O = a + b + c</div><div class="fex">np. 3+4+5=12</div></div></div></div></div>
+  <div class="fdet" id="fd-tp"><div class="fdtit" style="color:var(--pu)">◺ Trójkąt prostokątny</div><div class="fform"><div class="frow"><div class="flbl">Pole</div><div><div class="fval">P = (a × b) ÷ 2</div><div class="fex">np. a=3, b=4 → P=6</div></div></div><div class="frow"><div class="flbl">Pitagoras</div><div><div class="fval">c² = a² + b²</div><div class="fex">3²+4²=25 → c=5</div></div></div></div></div>
   <div style="height:8px"></div>
+</div>
+</div>
+
+<!-- SCREEN 8: ODZNAKI -->
+<div class="screen hidden" id="sbdg">
+<div class="si">
+  <div class="brow"><button class="bk" onclick="showScreen('sc')">←</button><span style="font-weight:700;color:var(--mu);font-size:.85rem">Powrót</span></div>
+  <div class="ttl" style="font-size:1.6rem;margin-bottom:4px;">🏅 Odznaki</div>
+  <div class="sub">Zdobądź je wszystkie!</div>
+  <div id="badges-list" style="width:100%"></div>
 </div>
 </div>
 
@@ -478,14 +472,33 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--tx);displa
 const AC=new(window.AudioContext||window.webkitAudioContext)();
 function pt(f,t,d,v=.2){if(!oSnd)return;try{const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d);o.start();o.stop(AC.currentTime+d);}catch(e){}}
 function sfxOk(){pt(660,'sine',.1);setTimeout(()=>pt(880,'sine',.14),70);}
-function sfxErr(){pt(200,'sawtooth',.22,.28);}
+function sfxErr(){pt(180,'sawtooth',.2,.25);setTimeout(()=>pt(140,'sawtooth',.18,.2),80);}
 function sfxSt(){[440,550,660].forEach((f,i)=>setTimeout(()=>pt(f,'sine',.18),i*90));}
 function sfxLv(){[440,550,660,880].forEach((f,i)=>setTimeout(()=>pt(f,'sine',.2),i*75));}
+function sfxBadge(){[600,800,1000,800,600].forEach((f,i)=>setTimeout(()=>pt(f,'sine',.15,.18),i*60));}
 
 /* ══ CONFETTI ══ */
 const CCV=document.getElementById('cc'),CCX=CCV.getContext('2d');let CP=[];
-function lConf(){CCV.width=innerWidth;CCV.height=innerHeight;CP=[];const cl=['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#c94bff','#fff'];for(let i=0;i<110;i++)CP.push({x:Math.random()*CCV.width,y:-10,vx:(Math.random()-.5)*6,vy:Math.random()*4+2,color:cl[~~(Math.random()*cl.length)],sz:Math.random()*8+3,rt:Math.random()*360,rv:(Math.random()-.5)*8,life:1});requestAnimationFrame(aC);}
-function aC(){CCX.clearRect(0,0,CCV.width,CCV.height);CP.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.14;p.rt+=p.rv;p.life-=.008;if(p.life<=0)return;CCX.save();CCX.globalAlpha=p.life;CCX.translate(p.x,p.y);CCX.rotate(p.rt*Math.PI/180);CCX.fillStyle=p.color;CCX.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);CCX.restore();});CP=CP.filter(p=>p.life>0&&p.y<CCV.height+20);if(CP.length)requestAnimationFrame(aC);}
+function lConf(){CCV.width=innerWidth;CCV.height=innerHeight;CP=[];const cl=['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#c94bff','#fff'];for(let i=0;i<120;i++)CP.push({x:Math.random()*CCV.width,y:-10,vx:(Math.random()-.5)*7,vy:Math.random()*4+2,color:cl[~~(Math.random()*cl.length)],sz:Math.random()*9+3,rt:Math.random()*360,rv:(Math.random()-.5)*9,life:1});requestAnimationFrame(aC);}
+function aC(){CCX.clearRect(0,0,CCV.width,CCV.height);CP.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.14;p.rt+=p.rv;p.life-=.007;if(p.life<=0)return;CCX.save();CCX.globalAlpha=p.life;CCX.translate(p.x,p.y);CCX.rotate(p.rt*Math.PI/180);CCX.fillStyle=p.color;CCX.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);CCX.restore();});CP=CP.filter(p=>p.life>0&&p.y<CCV.height+20);if(CP.length)requestAnimationFrame(aC);}
+
+/* ══ CARD PARTICLES ══ */
+const PCV=document.getElementById('cpart'),PCX=PCV.getContext('2d');let PP=[];
+function spawnParticles(correct){
+  PCV.width=innerWidth;PCV.height=innerHeight;
+  const ci=document.getElementById('ci');
+  const r=ci.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  const col=correct?['#6bcb77','#a8f5b8','#fff']:['#ff6b6b','#ff9999','#ffcccc'];
+  for(let i=0;i<(correct?18:10);i++){
+    const angle=Math.random()*Math.PI*2;
+    const spd=correct?(Math.random()*4+2):(Math.random()*3+1.5);
+    PP.push({x:cx,y:cy,vx:Math.cos(angle)*spd,vy:Math.sin(angle)*spd-1,color:col[~~(Math.random()*col.length)],sz:correct?(Math.random()*7+3):(Math.random()*5+2),life:1,shape:correct?(Math.random()<.5?'star':'circle'):'circle'});
+  }
+  requestAnimationFrame(aP);
+}
+function drawStar(ctx,x,y,r){ctx.beginPath();for(let i=0;i<5;i++){const a=i*Math.PI*.4-Math.PI/2;ctx.lineTo(x+r*Math.cos(a),y+r*Math.sin(a));const a2=a+Math.PI*.2;ctx.lineTo(x+r*.4*Math.cos(a2),y+r*.4*Math.sin(a2));}ctx.closePath();}
+function aP(){PCX.clearRect(0,0,PCV.width,PCV.height);PP.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.15;p.life-=.03;if(p.life<=0)return;PCX.save();PCX.globalAlpha=p.life;PCX.fillStyle=p.color;if(p.shape==='star'){drawStar(PCX,p.x,p.y,p.sz);PCX.fill();}else{PCX.beginPath();PCX.arc(p.x,p.y,p.sz/2,0,Math.PI*2);PCX.fill();}PCX.restore();});PP=PP.filter(p=>p.life>0);if(PP.length)requestAnimationFrame(aP);}
 
 /* ══ TOAST ══ */
 function toast(m){const t=document.getElementById('tst');t.textContent=m;t.classList.add('sh');setTimeout(()=>t.classList.remove('sh'),2400);}
@@ -495,7 +508,17 @@ function ld(k,d){try{const v=localStorage.getItem(k);return v!==null?JSON.parse(
 function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
 
 /* ══ CONSTANTS ══ */
-const AVTS=['😊','🦁','🐼','🦊','🐸','🦄','🐯','🐙','⭐','🚀','🎮','🌈'];
+const AVTS_BASE=['😊','🦁','🐼','🦊','🐸','🦄'];
+// Extra avatars unlocked at certain ranks (index in full list)
+const AVTS_ALL=[
+  '😊','🦁','🐼','🦊','🐸','🦄',  // base — always available
+  '🐯','🐙','⭐','🚀',              // unlocked at rank 1 (Adept)
+  '🎮','🌈','🦋','🐲',              // unlocked at rank 2 (Sprawny)
+  '🔥','💎','👾','🌟',              // unlocked at rank 3 (Biegły)
+  '🦅','🐉','🌙','🎯',              // unlocked at rank 4 (Ekspert)
+  '👑','🏆','✨','🎪',              // unlocked at rank 5+ (Mistrz/Geniusz)
+];
+const AV_UNLOCK=[0,0,0,0,0,0, 1,1,1,1, 2,2,2,2, 3,3,3,3, 4,4,4,4, 5,5,5,5]; // rank index needed
 
 const CLS_META={
   k1:{label:'Klasa 1',icon:'1️⃣',color:'var(--a3)',hex:'#6bcb77'},
@@ -504,48 +527,93 @@ const CLS_META={
   k4:{label:'Klasa 4',icon:'4️⃣',color:'var(--a1)',hex:'#ff6b6b'},
   k5:{label:'Klasa 5',icon:'5️⃣',color:'var(--pu)',hex:'#c94bff'},
 };
-
-// Difficulty levels — names/icons are fixed, descriptions come from category+class
-const DIFF_META={
-  easy:  {label:'Łatwy',  icon:'🌱'},
-  medium:{label:'Średni', icon:'🔥'},
-  hard:  {label:'Trudny', icon:'💥'},
-  legend:{label:'Legenda',icon:'👑'},
-};
-
+const DIFF_META={easy:{label:'Łatwy',icon:'🌱'},medium:{label:'Średni',icon:'🔥'},hard:{label:'Trudny',icon:'💥'},legend:{label:'Legenda',icon:'👑'}};
 const RANKS=[{n:'🎓 Uczeń',x:0},{n:'📚 Adept',x:100},{n:'⚡ Sprawny',x:250},{n:'🔥 Biegły',x:500},{n:'💪 Ekspert',x:900},{n:'🏅 Mistrz',x:1400},{n:'👑 Geniusz',x:2000}];
-function getRank(x){let r=RANKS[0];for(const rk of RANKS)if(x>=rk.x)r=rk;return r;}
+function getRank(x){let r=RANKS[0],ri=0;for(let i=0;i<RANKS.length;i++)if(x>=RANKS[i].x){r=RANKS[i];ri=i;}return{...r,idx:ri};}
 function nxtXP(x){for(const rk of RANKS)if(rk.x>x)return rk.x;return RANKS[RANKS.length-1].x;}
 
+/* ══ BADGE DEFINITIONS ══ */
+const BADGE_DEFS=[
+  {id:'first_game',   ico:'🎮', name:'Pierwszy krok',    desc:'Ukończ pierwszą sesję',            check:p=>p.totalSessions>=1},
+  {id:'perfect',      ico:'💯', name:'Perfekcja',         desc:'Zdobądź 100% w sesji',             check:p=>(p.bestPct||0)>=100},
+  {id:'streak3',      ico:'🔥', name:'Seria 3 dni',       desc:'Ćwicz 3 dni z rzędu',              check:p=>(p.streak||0)>=3},
+  {id:'streak7',      ico:'🌟', name:'Tygodniowa seria',  desc:'Ćwicz 7 dni z rzędu',              check:p=>(p.streak||0)>=7},
+  {id:'sessions5',    ico:'📚', name:'Pilny uczeń',       desc:'Ukończ 5 sesji',                   check:p=>(p.totalSessions||0)>=5},
+  {id:'sessions20',   ico:'🎓', name:'Weteran',           desc:'Ukończ 20 sesji',                  check:p=>(p.totalSessions||0)>=20},
+  {id:'xp100',        ico:'⭐', name:'Pierwsze 100 XP',   desc:'Zdobądź 100 XP',                   check:p=>(p.xp||0)>=100},
+  {id:'xp500',        ico:'💫', name:'500 XP',            desc:'Zdobądź 500 XP',                   check:p=>(p.xp||0)>=500},
+  {id:'xp1000',       ico:'🏅', name:'1000 XP',           desc:'Zdobądź 1000 XP',                  check:p=>(p.xp||0)>=1000},
+  {id:'allcats',      ico:'🌈', name:'Wszechstronny',     desc:'Zagraj we wszystkie 6 kategorii',   check:p=>(p.catsPlayed||new Set()).size>=6},
+  {id:'legend_diff',  ico:'👑', name:'Legendarny',        desc:'Ukończ sesję na poziomie Legenda',  check:p=>!!(p.legendDone)},
+  {id:'no_errors',    ico:'🎯', name:'Celny strzał',      desc:'Sesja bez błędów (min. 10 kart)',   check:p=>!!(p.hadPerfectSession)},
+  {id:'comeback',     ico:'💪', name:'Powrót',            desc:'Popraw słabą stronę do 100%',      check:p=>!!(p.improvedWeak)},
+  {id:'speed',        ico:'⚡', name:'Błyskawica',        desc:'Ukończ sesję z timerem',            check:p=>!!(p.timerDone)},
+];
+
 /* ══ STATE ══ */
-let profiles=ld('profiles3',[]);
-let actPid=ld('actPid3',null);
-let selCatId='mult', selDiff='easy', mode='quiz';
-let oTimer=false, oSnd=false, oRev=false;
-let cards=[], cur=0, score=0, errs=0, revealed=false;
-let p1s=0, p2s=0, actP=1, tmrI=null, tmrLeft=0, isRev=false;
+let profiles=ld('profiles4',[]);
+let actPid=ld('actPid4',null);
+let selCatId='mult',selDiff='easy',mode='quiz';
+let oTimer=false,oSnd=false,oRev=false;
+let cards=[],cur=0,score=0,errs=0,revealed=false;
+let p1s=0,p2s=0,actP=1,tmrI=null,tmrLeft=0,isRev=false;
 const TOTAL=15;
+let pendingUnlocks=[];
 
 function getP(id){return profiles.find(p=>p.id===id);}
 function actProf(){return getP(actPid);}
-function sveP(){sv('profiles3',profiles);}
+function sveP(){sv('profiles4',profiles);}
 function profClass(){const p=actProf();return p?p.cls:'k3';}
 
+/* ══ BADGES ══ */
+function checkBadges(prof){
+  if(!prof.badges)prof.badges=[];
+  const newOnes=[];
+  BADGE_DEFS.forEach(bd=>{
+    if(!prof.badges.includes(bd.id)&&bd.check(prof)){
+      prof.badges.push(bd.id);newOnes.push(bd);
+    }
+  });
+  return newOnes;
+}
+
+/* ══ UNLOCK QUEUE ══ */
+let unlockQueue=[];
+function queueUnlock(items){unlockQueue.push(...items);if(unlockQueue.length===items.length)showNextUnlock();}
+function showNextUnlock(){
+  if(!unlockQueue.length)return;
+  const item=unlockQueue[0];
+  document.getElementById('un-ico').textContent=item.ico;
+  document.getElementById('un-ttl').textContent=item.name;
+  document.getElementById('un-sub').textContent=item.desc||'';
+  document.getElementById('unmod').classList.remove('hidden');
+  sfxBadge();
+  if(item.isAvatar)lConf();
+}
+function closeUnlock(){
+  document.getElementById('unmod').classList.add('hidden');
+  unlockQueue.shift();
+  if(unlockQueue.length)setTimeout(showNextUnlock,300);
+}
+
 /* ══ MODAL ══ */
-let selAv=AVTS[0], selModalCls='k3';
+let selAv=AVTS_ALL[0],selModalCls='k3';
 function openModal(){
-  document.getElementById('mn').value=''; selAv=AVTS[0]; selModalCls='k3';
-  // avatars
-  const ar=document.getElementById('avrow'); ar.innerHTML='';
-  AVTS.forEach((a,i)=>{
-    const d=document.createElement('div'); d.className='avo'+(i===0?' s':''); d.textContent=a;
-    d.onclick=()=>{document.querySelectorAll('.avo').forEach(x=>x.classList.remove('s'));d.classList.add('s');selAv=a;};
+  document.getElementById('mn').value='';selAv=AVTS_ALL[0];selModalCls='k3';
+  const ar=document.getElementById('avrow');ar.innerHTML='';
+  // In modal, only show base avatars (new profile has rank 0)
+  AVTS_ALL.forEach((a,i)=>{
+    const rankNeeded=AV_UNLOCK[i];
+    const isBase=rankNeeded===0;
+    const d=document.createElement('div');d.className='avo'+(i===0?' s':'')+(isBase?'':' locked');
+    d.textContent=a;
+    if(!isBase){const lb=document.createElement('div');lb.className='lock-badge';lb.textContent='🔒';d.appendChild(lb);}
+    if(isBase)d.onclick=()=>{document.querySelectorAll('.avo:not(.locked)').forEach(x=>x.classList.remove('s'));d.classList.add('s');selAv=a;};
     ar.appendChild(d);
   });
-  // class picker
-  const cg=document.getElementById('clsgrid'); cg.innerHTML='';
+  const cg=document.getElementById('clsgrid');cg.innerHTML='';
   Object.entries(CLS_META).forEach(([key,m])=>{
-    const b=document.createElement('button'); b.className='cls-opt'+(key==='k3'?' s':''); b.dataset.c=key;
+    const b=document.createElement('button');b.className='cls-opt'+(key==='k3'?' s':'');b.dataset.c=key;
     b.innerHTML=`${m.icon}<br><span style="font-size:.62rem">${m.label}</span>`;
     b.onclick=()=>{document.querySelectorAll('.cls-opt').forEach(x=>x.classList.remove('s'));b.classList.add('s');selModalCls=key;};
     cg.appendChild(b);
@@ -555,35 +623,50 @@ function openModal(){
 }
 function closeModal(){document.getElementById('mbg').classList.add('hidden');}
 function saveProf(){
-  const nm=document.getElementById('mn').value.trim(); if(!nm)return;
-  const p={id:Date.now().toString(),name:nm,avatar:selAv,cls:selModalCls,xp:0,streak:0,lastPlay:'',weakSpots:{},history:[]};
-  profiles.push(p); sveP(); closeModal(); renderP();
+  const nm=document.getElementById('mn').value.trim();if(!nm)return;
+  const p={id:Date.now().toString(),name:nm,avatar:selAv,cls:selModalCls,xp:0,streak:0,lastPlay:'',weakSpots:{},history:[],badges:[],totalSessions:0,bestPct:0,catsPlayed:[],legendDone:false,hadPerfectSession:false,improvedWeak:false,timerDone:false};
+  profiles.push(p);sveP();closeModal();renderP();
 }
 
 /* ══ PROFILE LIST ══ */
 function renderP(){
-  const list=document.getElementById('plist'); list.innerHTML='';
+  const list=document.getElementById('plist');list.innerHTML='';
   if(!profiles.length){list.innerHTML='<div style="text-align:center;color:var(--mu);font-weight:700;padding:18px 0">Dodaj pierwszy profil!</div>';}
   profiles.forEach(p=>{
-    const rk=getRank(p.xp||0); const cm=CLS_META[p.cls||'k3'];
-    const div=document.createElement('div');
-    div.className='pcard'+(p.id===actPid?' sel':'');
-    div.innerHTML=`<div class="pav">${p.avatar}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pmeta" style="color:${cm.hex}">${cm.label}</div><div class="pmeta">${rk.n} · 🔥 ${p.streak||0} dni</div></div><div class="pxp">${p.xp||0} XP</div><button class="pdel" onclick="delP(event,'${p.id}')">🗑</button>`;
-    div.onclick=(e)=>{if(e.target.closest('.pdel'))return;actPid=p.id;sv('actPid3',actPid);renderP();const nb=document.getElementById('pnxt');nb.removeAttribute('disabled');nb.style.opacity='1';};
+    const rk=getRank(p.xp||0);const cm=CLS_META[p.cls||'k3'];
+    const badgeCount=(p.badges||[]).length;
+    const div=document.createElement('div');div.className='pcard'+(p.id===actPid?' sel':'');
+    div.innerHTML=`<div class="pav">${p.avatar}</div><div class="pinfo"><div class="pname">${p.name}</div><div class="pmeta" style="color:${cm.hex}">${cm.label}</div><div class="pmeta">${rk.n}${badgeCount?` · 🏅 ${badgeCount}`:''} · 🔥 ${p.streak||0} dni</div></div><div class="pxp">${p.xp||0} XP</div><button class="pdel" onclick="delP(event,'${p.id}')">🗑</button>`;
+    div.onclick=(e)=>{if(e.target.closest('.pdel'))return;actPid=p.id;sv('actPid4',actPid);renderP();const nb=document.getElementById('pnxt');nb.removeAttribute('disabled');nb.style.opacity='1';};
     list.appendChild(div);
   });
   const nb=document.getElementById('pnxt');
   if(actPid&&profiles.some(p=>p.id===actPid)){nb.removeAttribute('disabled');nb.style.opacity='1';}
   else{nb.setAttribute('disabled','');nb.style.opacity='.4';}
 }
-function delP(e,id){e.stopPropagation();if(!confirm('Usunąć profil? Postęp zostanie utracony.'))return;profiles=profiles.filter(p=>p.id!==id);if(actPid===id)actPid=null;sveP();sv('actPid3',actPid);renderP();}
+function delP(e,id){e.stopPropagation();if(!confirm('Usunąć profil? Postęp zostanie utracony.'))return;profiles=profiles.filter(p=>p.id!==id);if(actPid===id)actPid=null;sveP();sv('actPid4',actPid);renderP();}
 
-/* ══ XP / STREAK ══ */
+/* ══ XP / STREAK / AVATAR UNLOCKS ══ */
 function updStreak(p){const td=new Date().toDateString();if(p.lastPlay===td)return;const yd=new Date(Date.now()-86400000).toDateString();p.streak=(p.lastPlay===yd)?(p.streak||0)+1:1;p.lastPlay=td;}
-function addXP(p,amt){const or=getRank(p.xp||0).n;p.xp=(p.xp||0)+amt;const nr=getRank(p.xp).n;if(nr!==or){sfxLv();lConf();toast('🎉 Nowy poziom: '+nr);}}
+function addXP(p,amt){
+  const oldRk=getRank(p.xp||0);
+  p.xp=(p.xp||0)+amt;
+  const newRk=getRank(p.xp);
+  const newUnlocks=[];
+  if(newRk.n!==oldRk.n){
+    sfxLv();lConf();toast('🎉 Nowy poziom: '+newRk.n);
+    // Check avatar unlocks
+    AVTS_ALL.forEach((av,i)=>{
+      if(AV_UNLOCK[i]===newRk.idx&&AV_UNLOCK[i]>0){
+        newUnlocks.push({ico:av,name:'Nowy awatar odblokowany!',desc:av+' dostępny teraz w profilu',isAvatar:true});
+      }
+    });
+  }
+  if(newUnlocks.length)queueUnlock(newUnlocks);
+}
 function refreshXP(){
-  const p=actProf(); if(!p)return;
-  const rk=getRank(p.xp||0), nxt=nxtXP(p.xp||0), prv=rk.x;
+  const p=actProf();if(!p)return;
+  const rk=getRank(p.xp||0),nxt=nxtXP(p.xp||0),prv=rk.x;
   const pct=nxt===prv?100:Math.min(100,Math.round(((p.xp||0)-prv)/(nxt-prv)*100));
   document.getElementById('xprnk').textContent=rk.n;
   document.getElementById('xpst').textContent='🔥 '+(p.streak||0)+' dni';
@@ -594,60 +677,54 @@ function refreshXP(){
   const cm=CLS_META[p.cls||'k3'];
   document.getElementById('hdrcls').style.color=cm.hex;
   document.getElementById('hdrcls').textContent=cm.icon+' '+cm.label;
+  // badge row
+  const br=document.getElementById('badge-row');br.innerHTML='';
+  const earned=(p.badges||[]).slice(0,4);
+  if(!earned.length){br.innerHTML='<span style="font-size:.72rem;color:var(--mu);font-weight:700">Brak odznak — zagraj pierwszą sesję!</span>';return;}
+  earned.forEach(id=>{const bd=BADGE_DEFS.find(x=>x.id===id);if(!bd)return;const s=document.createElement('div');s.className='badge';s.textContent=bd.ico+' '+bd.name;br.appendChild(s);});
+  if((p.badges||[]).length>4){const more=document.createElement('div');more.className='badge';more.textContent='+'+(p.badges.length-4)+' więcej';br.appendChild(more);}
 }
 function refreshWk(){
-  const p=actProf(); if(!p)return;
+  const p=actProf();if(!p)return;
   Object.keys(CATS).forEach(cat=>{
-    const wb=document.getElementById('wb-'+cat); if(!wb)return;
+    const wb=document.getElementById('wb-'+cat);if(!wb)return;
     const w=p.weakSpots&&p.weakSpots[cat]||{};
     const c=Object.values(w).filter(v=>v>=2).length;
     if(c>0){wb.textContent='⚠ '+c+' słabych';wb.classList.remove('hidden');}else wb.classList.add('hidden');
   });
 }
-// Update category descriptions based on active class
 function refreshCatDescs(){
   const cls=profClass();
-  Object.keys(CATS).forEach(cat=>{
-    const el=document.getElementById('cd-'+cat); if(!el)return;
-    el.textContent=CATS[cat].classDesc[cls]||'';
-  });
+  Object.keys(CATS).forEach(cat=>{const el=document.getElementById('cd-'+cat);if(el)el.textContent=CATS[cat].classDesc[cls]||'';});
 }
-function recWk(cat,q,ok){const p=actProf();if(!p)return;if(!p.weakSpots)p.weakSpots={};if(!p.weakSpots[cat])p.weakSpots[cat]={};if(!ok)p.weakSpots[cat][q]=(p.weakSpots[cat][q]||0)+1;else p.weakSpots[cat][q]=Math.max(0,(p.weakSpots[cat][q]||0)-1);sveP();}
+function recWk(cat,q,ok){const p=actProf();if(!p)return;if(!p.weakSpots)p.weakSpots={};if(!p.weakSpots[cat])p.weakSpots[cat]={};if(!ok)p.weakSpots[cat][q]=(p.weakSpots[cat][q]||0)+1;else{const wasWeak=(p.weakSpots[cat][q]||0)>=2;p.weakSpots[cat][q]=Math.max(0,(p.weakSpots[cat][q]||0)-1);if(wasWeak&&p.weakSpots[cat][q]<2)p.improvedWeak=true;}sveP();}
 function getWkQ(cat){const p=actProf();if(!p||!p.weakSpots||!p.weakSpots[cat])return[];return Object.entries(p.weakSpots[cat]).filter(([,v])=>v>=2).sort((a,b)=>b[1]-a[1]).map(([q])=>q);}
 
 /* ══ SCREENS ══ */
-const SCR=['sp','sc','sd','sg','sr','sh','scs'];
+const SCR=['sp','sc','sd','sg','sr','sh','scs','sbdg'];
 function showScreen(id){SCR.forEach(s=>document.getElementById(s).classList.toggle('hidden',s!==id));}
 
 /* ══ CAT SCREEN ══ */
-function goCat(){
-  showScreen('sc'); refreshXP(); refreshWk(); refreshCatDescs();
-}
+function goCat(){showScreen('sc');refreshXP();refreshWk();refreshCatDescs();}
 function selCatFn(el){
   document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('sel'));
-  el.classList.add('sel'); selCatId=el.dataset.cat;
-  const p=actProf();
-  const hw=p&&p.weakSpots&&Object.values(p.weakSpots[selCatId]||{}).some(v=>v>=2);
+  el.classList.add('sel');selCatId=el.dataset.cat;
+  const p=actProf();const hw=p&&p.weakSpots&&Object.values(p.weakSpots[selCatId]||{}).some(v=>v>=2);
   document.getElementById('orev').style.display=hw?'':'none';
   if(!hw&&oRev){oRev=false;document.getElementById('orev').classList.remove('rv');}
 }
 
 /* ══ DIFF SCREEN ══ */
 function goDiff(){
-  const cat=CATS[selCatId]; const cls=profClass(); const cm=CLS_META[cls];
+  const cat=CATS[selCatId];const cls=profClass();const cm=CLS_META[cls];
   document.getElementById('ccico').textContent=cat.icon;
   document.getElementById('ccnm').textContent=cat.name;
-  // Class badge
   const badge=document.getElementById('cls-badge');
-  badge.textContent=cm.icon+' '+cm.label;
-  badge.style.color=cm.hex; badge.style.borderColor=cm.hex;
-  badge.style.background=cm.hex+'18';
-  // Build 4 difficulty cards with class-specific descriptions
-  const g=document.getElementById('dgrid'); g.innerHTML='';
+  badge.textContent=cm.icon+' '+cm.label;badge.style.color=cm.hex;badge.style.borderColor=cm.hex;badge.style.background=cm.hex+'18';
+  const g=document.getElementById('dgrid');g.innerHTML='';
   ['easy','medium','hard','legend'].forEach(d=>{
-    const dm=DIFF_META[d]; const desc=cat.diffDesc[cls][d];
-    const div=document.createElement('div');
-    div.className='dc'+(d===selDiff?' sel':''); div.dataset.d=d;
+    const dm=DIFF_META[d];const desc=cat.diffDesc[cls][d];
+    const div=document.createElement('div');div.className='dc'+(d===selDiff?' sel':'');div.dataset.d=d;
     div.innerHTML=`<div class="dcico">${dm.icon}</div><div class="dcnm" style="color:var(--dcc)">${dm.label}</div><div class="dcrng">${desc}</div>`;
     div.onclick=()=>{document.querySelectorAll('.dc').forEach(c=>c.classList.remove('sel'));div.classList.add('sel');selDiff=d;};
     g.appendChild(div);
@@ -671,287 +748,116 @@ function simp(n,d){const g=gcd(Math.abs(n),Math.abs(d));return[n/g,d/g];}
 function fstr(n,d){if(d===1)return`${n}`;if(n===0)return'0';const[sn,sd]=simp(n,d);return`${sn}/${sd}`;}
 function nbInts(c,cnt,mn,mx){const s=new Set([c]);let t=0;while(s.size<cnt&&t++<600){const v=ri(~~mn,Math.ceil(mx));if(v!==c&&v>=0)s.add(v);}return sfl([...s]);}
 
-/* ══════════════════════════════════════
-   CATEGORY DEFINITIONS
-   Each category has:
-   - classDesc[cls]  : short description shown on category screen per class
-   - diffDesc[cls][diff] : what the difficulty means for that class
-   - gen(cls, diff)  : generates a card
-   - wrongs(ans, cls, diff, card) : generates wrong answers
-══════════════════════════════════════ */
+/* ══ NO-REPEAT CARD POOL SYSTEM ══
+   Instead of generating cards randomly and hoping for variety,
+   we build the full universe of possible cards, shuffle, and deal.
+   When pool runs out we reshuffle. */
+function buildPool(catId,cls,diff){
+  const cat=CATS[catId];const pool=[];
+  // Generate many candidates then deduplicate by question text
+  const seen=new Set();const attempts=200;
+  for(let i=0;i<attempts;i++){
+    const c=cat.gen(cls,diff);
+    if(!seen.has(c.q)){seen.add(c.q);pool.push(c);}
+  }
+  return sfl(pool);
+}
+let cardPool=[],poolIdx=0;
+function dealCards(catId,cls,diff,total,weakQuestions=null){
+  // If weak mode: prioritise weak cards, fill rest normally
+  if(weakQuestions&&weakQuestions.length){
+    const weakPool=[];const seenW=new Set();
+    for(let i=0;i<300&&weakPool.length<total;i++){
+      const c=CATS[catId].gen(cls,diff);
+      if(weakQuestions.includes(c.q)&&!seenW.has(c.q)){seenW.add(c.q);weakPool.push(c);}
+    }
+    const normalPool=buildPool(catId,cls,diff).filter(c=>!weakQuestions.includes(c.q));
+    const combined=sfl([...weakPool,...normalPool]).slice(0,total);
+    while(combined.length<total)combined.push(CATS[catId].gen(cls,diff));
+    return combined;
+  }
+  // Fresh pool if needed
+  if(poolIdx>=cardPool.length-1||cardPool.length===0){
+    cardPool=buildPool(catId,cls,diff);poolIdx=0;
+  }
+  const batch=[];const used=new Set();
+  while(batch.length<total&&poolIdx<cardPool.length){
+    const c=cardPool[poolIdx++];
+    if(!used.has(c.q)){used.add(c.q);batch.push(c);}
+  }
+  // If pool ran dry before filling, refill and continue
+  if(batch.length<total){
+    cardPool=buildPool(catId,cls,diff);poolIdx=0;
+    while(batch.length<total&&poolIdx<cardPool.length){
+      const c=cardPool[poolIdx++];
+      if(!used.has(c.q)){used.add(c.q);batch.push(c);}
+    }
+  }
+  return batch;
+}
+
+/* ══ CATEGORIES ══ */
 const CATS={
-
-  /* ── TABLICZKA MNOŻENIA ── */
-  mult:{
-    icon:'✖️', name:'Tabliczka mnożenia',
-    classDesc:{
-      k1:'Mnożenie przez 2 i 3',
-      k2:'Mnożenie 2–5',
-      k3:'Pełna tabliczka 2–10',
-      k4:'Mnożenie 6–15',
-      k5:'Mnożenie do 20, wielokrotności',
-    },
+  mult:{icon:'✖️',name:'Tabliczka mnożenia',
+    classDesc:{k1:'Mnożenie przez 2 i 3',k2:'Mnożenie 2–5',k3:'Pełna tabliczka 2–10',k4:'Mnożenie 6–15',k5:'Mnożenie do 20'},
     diffDesc:{
-      k1:{easy:'2×1 do 2×5',       medium:'2×1 do 3×5',      hard:'2×1 do 3×9',       legend:'2×1 do 3×10'},
-      k2:{easy:'2×2 do 3×5',       medium:'2×2 do 4×5',      hard:'2×2 do 5×5',       legend:'2×2 do 5×9'},
-      k3:{easy:'2×2 do 5×5',       medium:'2×2 do 7×7',      hard:'5×5 do 10×10',     legend:'7×7 do 10×10'},
-      k4:{easy:'6×6 do 8×8',       medium:'6×6 do 10×10',    hard:'7×8 do 12×12',     legend:'9×9 do 15×15'},
-      k5:{easy:'7×8 do 12×12',     medium:'9×9 do 15×15',    hard:'10×10 do 18×18',   legend:'12×12 do 20×20'},
+      k1:{easy:'2×1 do 2×5',medium:'2×1 do 3×5',hard:'2×1 do 3×9',legend:'2×1 do 3×10'},
+      k2:{easy:'2×2 do 3×5',medium:'2×2 do 4×5',hard:'2×2 do 5×5',legend:'2×2 do 5×9'},
+      k3:{easy:'2×2 do 5×5',medium:'2×2 do 7×7',hard:'5×5 do 10×10',legend:'7×7 do 10×10'},
+      k4:{easy:'6×6 do 8×8',medium:'6×6 do 10×10',hard:'7×8 do 12×12',legend:'9×9 do 15×15'},
+      k5:{easy:'7×8 do 12×12',medium:'9×9 do 15×15',hard:'10×10 do 18×18',legend:'12×12 do 20×20'},
     },
-    _ranges:{
-      k1:{easy:[[2,2],[1,5]],  medium:[[2,3],[1,5]],   hard:[[2,3],[1,9]],    legend:[[2,3],[1,10]]},
-      k2:{easy:[[2,3],[2,5]],  medium:[[2,4],[2,5]],   hard:[[2,5],[2,5]],    legend:[[2,5],[2,9]]},
-      k3:{easy:[[2,5],[2,5]],  medium:[[2,7],[2,7]],   hard:[[5,10],[5,10]],  legend:[[7,10],[7,10]]},
-      k4:{easy:[[6,8],[6,8]],  medium:[[6,10],[6,10]], hard:[[7,12],[7,12]],  legend:[[9,15],[9,15]]},
-      k5:{easy:[[7,12],[7,12]],medium:[[9,15],[9,15]], hard:[[10,18],[10,18]],legend:[[12,20],[12,20]]},
-    },
-    gen(cls,d){const R=this._ranges[cls][d];const a=ri(R[0][0],R[0][1]),b=ri(R[1][0],R[1][1]);return{q:`${a} × ${b}`,ans:a*b,eq:`${a} × ${b} = ${a*b}`};},
-    wrongs(ans,cls,d){const R=this._ranges[cls][d];const mx=R[0][1]*R[1][1];return nbInts(ans,4,Math.max(1,ans-Math.round(mx*.2)),Math.min(mx,ans+Math.round(mx*.25)));}
+    _r:{k1:{easy:[[2,2],[1,5]],medium:[[2,3],[1,5]],hard:[[2,3],[1,9]],legend:[[2,3],[1,10]]},k2:{easy:[[2,3],[2,5]],medium:[[2,4],[2,5]],hard:[[2,5],[2,5]],legend:[[2,5],[2,9]]},k3:{easy:[[2,5],[2,5]],medium:[[2,7],[2,7]],hard:[[5,10],[5,10]],legend:[[7,10],[7,10]]},k4:{easy:[[6,8],[6,8]],medium:[[6,10],[6,10]],hard:[[7,12],[7,12]],legend:[[9,15],[9,15]]},k5:{easy:[[7,12],[7,12]],medium:[[9,15],[9,15]],hard:[[10,18],[10,18]],legend:[[12,20],[12,20]]}},
+    gen(cls,d){const R=this._r[cls][d];const a=ri(R[0][0],R[0][1]),b=ri(R[1][0],R[1][1]);return{q:`${a} × ${b}`,ans:a*b,eq:`${a} × ${b} = ${a*b}`};},
+    wrongs(ans,cls,d){const R=this._r[cls][d];const mx=R[0][1]*R[1][1];return nbInts(ans,4,Math.max(1,ans-Math.round(mx*.2)),Math.min(mx,ans+Math.round(mx*.25)));}
   },
-
-  /* ── DZIELENIE ── */
-  div:{
-    icon:'➗', name:'Dzielenie',
-    classDesc:{
-      k1:'Dzielenie na równe części (do 9)',
-      k2:'Dzielenie do 25',
-      k3:'Dzielenie tabliczkowe do 100',
-      k4:'Dzielenie do 144',
-      k5:'Dzielenie do 400',
-    },
-    diffDesc:{
-      k1:{easy:'÷2, wynik 1–3',       medium:'÷2÷3, wynik 1–4',    hard:'÷2÷3, wynik 1–5',      legend:'÷2÷3, wynik 1–6'},
-      k2:{easy:'÷2÷3, wynik 1–5',     medium:'÷2–4, wynik 1–5',    hard:'÷2–5, wynik 1–5',      legend:'÷2–5, wynik 1–7'},
-      k3:{easy:'÷2–5, wynik 2–7',     medium:'÷2–7, wynik 2–9',    hard:'÷5–10, wynik 4–10',    legend:'÷7–10, wynik 5–10'},
-      k4:{easy:'÷6–9, wynik 5–10',    medium:'÷6–12, wynik 5–12',  hard:'÷7–12, wynik 6–12',    legend:'÷9–12, wynik 7–12'},
-      k5:{easy:'÷8–12, wynik 7–14',   medium:'÷9–15, wynik 7–15',  hard:'÷10–16, wynik 8–18',   legend:'÷12–18, wynik 8–20'},
-    },
-    _ranges:{
-      k1:{easy:[2,3,1,3], medium:[2,3,1,4], hard:[2,3,1,5], legend:[2,3,1,6]},
-      k2:{easy:[2,3,1,5], medium:[2,4,1,5], hard:[2,5,1,5], legend:[2,5,1,7]},
-      k3:{easy:[2,5,2,7], medium:[2,7,2,9], hard:[5,10,4,10],legend:[7,10,5,10]},
-      k4:{easy:[6,9,5,10],medium:[6,12,5,12],hard:[7,12,6,12],legend:[9,12,7,12]},
-      k5:{easy:[8,12,7,14],medium:[9,15,7,15],hard:[10,16,8,18],legend:[12,18,8,20]},
-    },
-    gen(cls,d){const R=this._ranges[cls][d];const b=ri(R[0],R[1]),ans=ri(R[2],R[3]),a=b*ans;return{q:`${a} ÷ ${b}`,ans,eq:`${a} ÷ ${b} = ${ans}`};},
-    wrongs(ans,cls,d){const R=this._ranges[cls][d];return nbInts(ans,4,Math.max(1,R[2]-2),R[3]+3);}
+  div:{icon:'➗',name:'Dzielenie',
+    classDesc:{k1:'Dzielenie do 9',k2:'Dzielenie do 25',k3:'Dzielenie do 100',k4:'Dzielenie do 144',k5:'Dzielenie do 400'},
+    diffDesc:{k1:{easy:'÷2, wynik 1–3',medium:'÷2÷3, wynik 1–4',hard:'÷2÷3, wynik 1–5',legend:'÷2÷3, wynik 1–6'},k2:{easy:'÷2÷3, wynik 1–5',medium:'÷2–4, wynik 1–5',hard:'÷2–5, wynik 1–5',legend:'÷2–5, wynik 1–7'},k3:{easy:'÷2–5, wynik 2–7',medium:'÷2–7, wynik 2–9',hard:'÷5–10, wynik 4–10',legend:'÷7–10, wynik 5–10'},k4:{easy:'÷6–9, wynik 5–10',medium:'÷6–12, wynik 5–12',hard:'÷7–12, wynik 6–12',legend:'÷9–12, wynik 7–12'},k5:{easy:'÷8–12, wynik 7–14',medium:'÷9–15, wynik 7–15',hard:'÷10–16, wynik 8–18',legend:'÷12–18, wynik 8–20'}},
+    _r:{k1:{easy:[2,3,1,3],medium:[2,3,1,4],hard:[2,3,1,5],legend:[2,3,1,6]},k2:{easy:[2,3,1,5],medium:[2,4,1,5],hard:[2,5,1,5],legend:[2,5,1,7]},k3:{easy:[2,5,2,7],medium:[2,7,2,9],hard:[5,10,4,10],legend:[7,10,5,10]},k4:{easy:[6,9,5,10],medium:[6,12,5,12],hard:[7,12,6,12],legend:[9,12,7,12]},k5:{easy:[8,12,7,14],medium:[9,15,7,15],hard:[10,16,8,18],legend:[12,18,8,20]}},
+    gen(cls,d){const R=this._r[cls][d];const b=ri(R[0],R[1]),ans=ri(R[2],R[3]),a=b*ans;return{q:`${a} ÷ ${b}`,ans,eq:`${a} ÷ ${b} = ${ans}`};},
+    wrongs(ans,cls,d){const R=this._r[cls][d];return nbInts(ans,4,Math.max(1,R[2]-2),R[3]+3);}
   },
-
-  /* ── DODAWANIE I ODEJMOWANIE ── */
-  addsub:{
-    icon:'➕', name:'Dodawanie i odejmowanie',
-    classDesc:{
-      k1:'Działania do 20',
-      k2:'Działania do 100',
-      k3:'Działania do 1000',
-      k4:'Działania do 10 000',
-      k5:'Działania na dużych liczbach',
-    },
-    diffDesc:{
-      k1:{easy:'dodawanie do 10',      medium:'dodawanie do 20',     hard:'odejmowanie do 20',     legend:'+/− do 20 mieszane'},
-      k2:{easy:'+/− do 50',           medium:'+/− do 100',          hard:'+/− do 100 z przejściem',legend:'+/− do 100 szybko'},
-      k3:{easy:'+/− do 200',          medium:'+/− do 500',          hard:'+/− do 1000',           legend:'+/− do 1000 szybko'},
-      k4:{easy:'+/− do 2000',         medium:'+/− do 5000',         hard:'+/− do 10 000',         legend:'+/− do 10 000 szybko'},
-      k5:{easy:'+/− do 10 000',       medium:'+/− do 50 000',       hard:'+/− do 100 000',        legend:'+/− do 1 000 000'},
-    },
-    _ranges:{
-      k1:{easy:[1,10,true], medium:[1,20,true], hard:[1,20,false], legend:[1,20,null]},
-      k2:{easy:[1,50,null], medium:[1,100,null], hard:[1,100,null], legend:[1,100,null]},
-      k3:{easy:[10,200,null],medium:[50,500,null],hard:[100,1000,null],legend:[100,1000,null]},
-      k4:{easy:[100,2000,null],medium:[500,5000,null],hard:[1000,10000,null],legend:[1000,10000,null]},
-      k5:{easy:[1000,10000,null],medium:[5000,50000,null],hard:[10000,100000,null],legend:[100000,1000000,null]},
-    },
+  addsub:{icon:'➕',name:'Dodawanie i odejmowanie',
+    classDesc:{k1:'Działania do 20',k2:'Działania do 100',k3:'Działania do 1000',k4:'Działania do 10 000',k5:'Duże liczby'},
+    diffDesc:{k1:{easy:'dodawanie do 10',medium:'dodawanie do 20',hard:'odejmowanie do 20',legend:'+/− do 20'},k2:{easy:'+/− do 50',medium:'+/− do 100',hard:'+/− do 100',legend:'+/− do 100 szybko'},k3:{easy:'+/− do 200',medium:'+/− do 500',hard:'+/− do 1000',legend:'+/− do 1000'},k4:{easy:'+/− do 2000',medium:'+/− do 5000',hard:'+/− do 10 000',legend:'+/− do 10 000'},k5:{easy:'+/− do 10 000',medium:'+/− do 50 000',hard:'+/− do 100 000',legend:'+/− do 1 000 000'}},
+    _r:{k1:{easy:[1,10,true],medium:[1,20,true],hard:[1,20,false],legend:[1,20,null]},k2:{easy:[1,50,null],medium:[1,100,null],hard:[1,100,null],legend:[1,100,null]},k3:{easy:[10,200,null],medium:[50,500,null],hard:[100,1000,null],legend:[100,1000,null]},k4:{easy:[100,2000,null],medium:[500,5000,null],hard:[1000,10000,null],legend:[1000,10000,null]},k5:{easy:[1000,10000,null],medium:[5000,50000,null],hard:[10000,100000,null],legend:[100000,1000000,null]}},
+    gen(cls,d){const R=this._r[cls][d];const a=ri(R[0],R[1]),b=ri(R[0],R[1]);const isA=R[2]===true?true:R[2]===false?false:Math.random()<.5;if(isA)return{q:`${a} + ${b}`,ans:a+b,eq:`= ${a+b}`};const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`${bg} − ${sm}`,ans:bg-sm,eq:`= ${bg-sm}`};},
+    wrongs(ans,cls,d){const R=this._r[cls][d];const sp=Math.max(3,Math.round(R[1]*.08));return nbInts(ans,4,Math.max(0,ans-sp),ans+sp);}
+  },
+  brackets:{icon:'🔢',name:'Działania w nawiasach',
+    classDesc:{k1:'Proste grupowanie',k2:'Mnożenie z nawiasem',k3:'Dwa nawiasy',k4:'Złożone wyrażenia',k5:'Pełna kolejność działań'},
+    diffDesc:{k1:{easy:'(a+b)+c, 1–5',medium:'(a+b)+c, 1–8',hard:'(a−b)+c',legend:'(a+b)−c, 1–10'},k2:{easy:'(a+b)×c, c=2–3',medium:'(a+b)×c, c=2–5',hard:'(a+b)×c, c=2–9',legend:'(a−b)×c'},k3:{easy:'(a+b)×(c+d) małe',medium:'(a+b)×(c−d)',hard:'(a+b)×(c+d) większe',legend:'2 nawiasy mix'},k4:{easy:'a×(b+c)−d',medium:'a×(b+c)+d×e',hard:'(a+b)×c−d×e',legend:'3 działania'},k5:{easy:'2 nawiasy+mnożenie',medium:'zagnieżdżone',hard:'3 działania złożone',legend:'pełna kolejność'}},
     gen(cls,d){
-      const R=this._ranges[cls][d];
-      const a=ri(R[0],R[1]),b=ri(R[0],R[1]);
-      const isAdd=R[2]===true?true:R[2]===false?false:Math.random()<.5;
-      if(isAdd)return{q:`${a} + ${b}`,ans:a+b,eq:`= ${a+b}`};
-      const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`${bg} − ${sm}`,ans:bg-sm,eq:`= ${bg-sm}`};
+      if(cls==='k1'){const l={easy:[1,5],medium:[1,8],hard:[1,8],legend:[1,10]}[d];const a=ri(l[0],l[1]),b=ri(l[0],l[1]),c=ri(l[0],l[1]);if(d==='hard'){const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`(${bg}−${sm})+${c}`,ans:(bg-sm)+c,eq:`= ${(bg-sm)+c}`};}if(d==='legend')return{q:`(${a}+${b})−${Math.min(c,a+b)}`,ans:Math.max(0,a+b-c),eq:`= ${Math.max(0,a+b-c)}`};return{q:`(${a}+${b})+${c}`,ans:a+b+c,eq:`= ${a+b+c}`};}
+      if(cls==='k2'){const[al,cl]={easy:[[2,7],[2,3]],medium:[[2,8],[2,5]],hard:[[2,9],[2,9]],legend:[[2,9],[2,7]]}[d];const a=ri(al[0],al[1]),b=ri(al[0],al[1]),c=ri(cl[0],cl[1]);if(d==='legend'){const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`(${bg}−${sm})×${c}`,ans:(bg-sm)*c,eq:`= ${(bg-sm)*c}`};}return{q:`(${a}+${b})×${c}`,ans:(a+b)*c,eq:`= ${(a+b)*c}`};}
+      if(cls==='k3'){if(d==='easy'){const a=ri(2,6),b=ri(2,6),c=ri(2,6),e=ri(2,6);return{q:`(${a}+${b})×(${c}+${e})`,ans:(a+b)*(c+e),eq:`= ${(a+b)*(c+e)}`};}if(d==='medium'){const a=ri(2,8),b=ri(2,6),c=ri(3,9),e=ri(1,c-1>0?c-1:1);return{q:`(${a}+${b})×(${c}−${e})`,ans:(a+b)*(c-e),eq:`= ${(a+b)*(c-e)}`};}if(d==='hard'){const a=ri(3,9),b=ri(2,7),c=ri(3,9),e=ri(2,7);return{q:`(${a}+${b})×(${c}+${e})`,ans:(a+b)*(c+e),eq:`= ${(a+b)*(c+e)}`};}const a=ri(2,8),b=ri(2,6),c=ri(3,9),e=ri(2,5);return{q:`(${a}−${b>a?a-1:b})×(${c}+${e})`,ans:(a-(b>a?a-1:b))*(c+e),eq:`= ${(a-(b>a?a-1:b))*(c+e)}`};}
+      if(cls==='k4'){if(d==='easy'){const a=ri(3,10),b=ri(2,7),c=ri(2,6),e=ri(1,8);return{q:`${a}×(${b}+${c})−${e}`,ans:a*(b+c)-e,eq:`= ${a*(b+c)-e}`};}if(d==='medium'){const a=ri(3,8),b=ri(2,6),c=ri(2,5),d2=ri(2,4),e=ri(2,5);return{q:`${a}×(${b}+${c})+${d2}×${e}`,ans:a*(b+c)+d2*e,eq:`= ${a*(b+c)+d2*e}`};}if(d==='hard'){const a=ri(2,8),b=ri(2,6),c=ri(3,7),d2=ri(2,5),e=ri(2,5);return{q:`(${a}+${b})×${c}−${d2}×${e}`,ans:(a+b)*c-d2*e,eq:`= ${(a+b)*c-d2*e}`};}const a=ri(2,7),b=ri(2,5),c=ri(2,5),d2=ri(2,4),e=ri(2,4),f=ri(2,3);return{q:`(${a}+${b})×${c}−${d2}×(${e}+${f})`,ans:(a+b)*c-d2*(e+f),eq:`= ${(a+b)*c-d2*(e+f)}`};}
+      if(d==='easy'){const a=ri(2,8),b=ri(2,6),c=ri(2,7),d2=ri(1,c-1>0?c-1:1);return{q:`(${a}+${b})×(${c}−${d2})`,ans:(a+b)*(c-d2),eq:`= ${(a+b)*(c-d2)}`};}if(d==='medium'){const a=ri(2,6),b=ri(2,5),c=ri(2,5),d2=ri(1,c-1>0?c-1:1),e=ri(2,4);return{q:`${a}×(${b}+(${c}−${d2}))×${e}`,ans:a*(b+(c-d2))*e,eq:`= ${a*(b+(c-d2))*e}`};}if(d==='hard'){const a=ri(2,7),b=ri(2,5),c=ri(2,5),d2=ri(2,4),e=ri(2,4),f=ri(2,3);return{q:`(${a}+${b})×${c}−${d2}×${e}+${f}`,ans:(a+b)*c-d2*e+f,eq:`= ${(a+b)*c-d2*e+f}`};}const a=ri(2,6),b=ri(2,4),c=ri(2,5),d2=ri(2,4),e=ri(2,4),f=ri(2,3),g=ri(2,3);return{q:`${a}×(${b}+${c})−(${d2}+${e})×${f}+${g}`,ans:a*(b+c)-(d2+e)*f+g,eq:`= ${a*(b+c)-(d2+e)*f+g}`};
     },
-    wrongs(ans,cls,d){const R=this._ranges[cls][d];const sp=Math.max(3,Math.round(R[1]*.08));return nbInts(ans,4,Math.max(0,ans-sp),ans+sp);}
+    wrongs(ans,cls,d){const sp={k1:{easy:6,medium:10,hard:10,legend:10},k2:{easy:15,medium:20,hard:30,legend:25},k3:{easy:20,medium:30,hard:40,legend:50},k4:{easy:40,medium:60,hard:80,legend:100},k5:{easy:60,medium:100,hard:120,legend:150}}[cls][d];return nbInts(ans,4,Math.max(0,ans-sp),ans+sp);}
   },
-
-  /* ── NAWIASY ── */
-  brackets:{
-    icon:'🔢', name:'Działania w nawiasach',
-    classDesc:{
-      k1:'Proste grupowanie: (a+b)+c',
-      k2:'Mnożenie z nawiasem: (a+b)×c',
-      k3:'Dwa nawiasy: (a+b)×(c−d)',
-      k4:'Mnożenie i odejmowanie',
-      k5:'Złożone wyrażenia',
-    },
-    diffDesc:{
-      k1:{easy:'(a+b)+c, liczby 1–5',   medium:'(a+b)+c, liczby 1–8',   hard:'(a−b)+c, mieszane',     legend:'(a+b)−c, liczby 1–10'},
-      k2:{easy:'(a+b)×c, c=2–3',        medium:'(a+b)×c, c=2–5',        hard:'(a+b)×c, c=2–9',        legend:'(a−b)×c, mieszane'},
-      k3:{easy:'(a+b)×(c+d) małe',      medium:'(a+b)×(c−d)',           hard:'(a+b)×(c+d) większe',   legend:'mieszane 2 nawiasy'},
-      k4:{easy:'a×(b+c)−d',             medium:'a×(b+c)+d×e',           hard:'(a+b)×c−d×e',           legend:'złożone 3 działania'},
-      k5:{easy:'2 nawiasy + mnożenie',  medium:'zagnieżdżone nawiasy',   hard:'3 działania złożone',   legend:'pełna kolejność działań'},
-    },
+  fractions:{icon:'🍕',name:'Ułamki',
+    classDesc:{k1:'½, ¼, ¾ — porównywanie',k2:'Proste ułamki',k3:'Dodawanie i odejmowanie',k4:'Różne mianowniki',k5:'Mnożenie i dzielenie'},
+    diffDesc:{k1:{easy:'½ czy ¼?',medium:'½,¼,¾ — który większy?',hard:'½,¼,¾,⅓ — porównaj',legend:'do 1/8 — porównaj'},k2:{easy:'+ i − mian.2–3',medium:'+ i − mian.2–4',hard:'+ i − mian.2–6',legend:'+ i − mian.2–8'},k3:{easy:'ten sam mian.2–6',medium:'ten sam mian.2–10',hard:'różne mian.(×2)',legend:'różne mian.(dowolne)'},k4:{easy:'różne mian.2–8',medium:'różne mian.2–12',hard:'trzy ułamki +/−',legend:'mieszane'},k5:{easy:'mnożenie mian.2–6',medium:'mnożenie mian.2–10',hard:'dzielenie ułamków',legend:'mnożenie+dzielenie'}},
     gen(cls,d){
-      // k1
-      if(cls==='k1'){
-        const lim={easy:[1,5],medium:[1,8],hard:[1,8],legend:[1,10]}[d];
-        const a=ri(lim[0],lim[1]),b=ri(lim[0],lim[1]),c=ri(lim[0],lim[1]);
-        if(d==='hard'){const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`(${bg} − ${sm}) + ${c}`,ans:(bg-sm)+c,eq:`= ${(bg-sm)+c}`};}
-        if(d==='legend'){const[bg,sm]=a+b>=c?[a+b,c]:[c,a+b];return{q:`(${a} + ${b}) − ${sm>a+b?0:sm}`,ans:Math.max(0,a+b-c),eq:`= ${Math.max(0,a+b-c)}`};}
-        return{q:`(${a} + ${b}) + ${c}`,ans:a+b+c,eq:`= ${a+b+c}`};
-      }
-      // k2
-      if(cls==='k2'){
-        const [alim,clim]={easy:[[2,7],[2,3]],medium:[[2,8],[2,5]],hard:[[2,9],[2,9]],legend:[[2,9],[2,7]]}[d];
-        const a=ri(alim[0],alim[1]),b=ri(alim[0],alim[1]),c=ri(clim[0],clim[1]);
-        if(d==='legend'){const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`(${bg} − ${sm}) × ${c}`,ans:(bg-sm)*c,eq:`= ${(bg-sm)*c}`};}
-        return{q:`(${a} + ${b}) × ${c}`,ans:(a+b)*c,eq:`= ${(a+b)*c}`};
-      }
-      // k3
-      if(cls==='k3'){
-        if(d==='easy'||d==='hard'){const[lim]=[{easy:[2,6],hard:[3,9]}[d]];const a=ri(lim[0],lim[1]),b=ri(lim[0],lim[1]),c=ri(lim[0],lim[1]),e=ri(lim[0],lim[1]);return{q:`(${a}+${b})×(${c}+${e})`,ans:(a+b)*(c+e),eq:`= ${(a+b)*(c+e)}`};}
-        if(d==='medium'){const a=ri(2,8),b=ri(2,6),c=ri(3,9),e=ri(1,c-1>0?c-1:1);return{q:`(${a}+${b})×(${c}−${e})`,ans:(a+b)*(c-e),eq:`= ${(a+b)*(c-e)}`};}
-        const a=ri(2,8),b=ri(2,6),c=ri(3,9),e=ri(2,5);return{q:`(${a}−${b>a?a-1:b})×(${c}+${e})`,ans:(a-(b>a?a-1:b))*(c+e),eq:`= ${(a-(b>a?a-1:b))*(c+e)}`};
-      }
-      // k4
-      if(cls==='k4'){
-        if(d==='easy'){const a=ri(3,10),b=ri(2,7),c=ri(2,6),e=ri(1,8);return{q:`${a}×(${b}+${c})−${e}`,ans:a*(b+c)-e,eq:`= ${a*(b+c)-e}`};}
-        if(d==='medium'){const a=ri(3,8),b=ri(2,6),c=ri(2,5),d2=ri(2,4),e=ri(2,5);return{q:`${a}×(${b}+${c})+${d2}×${e}`,ans:a*(b+c)+d2*e,eq:`= ${a*(b+c)+d2*e}`};}
-        if(d==='hard'){const a=ri(2,8),b=ri(2,6),c=ri(3,7),d2=ri(2,5),e=ri(2,5);return{q:`(${a}+${b})×${c}−${d2}×${e}`,ans:(a+b)*c-d2*e,eq:`= ${(a+b)*c-d2*e}`};}
-        const a=ri(2,7),b=ri(2,5),c=ri(2,5),d2=ri(2,4),e=ri(2,4),f=ri(2,3);return{q:`(${a}+${b})×${c}−${d2}×(${e}+${f})`,ans:(a+b)*c-d2*(e+f),eq:`= ${(a+b)*c-d2*(e+f)}`};
-      }
-      // k5
-      if(d==='easy'){const a=ri(2,8),b=ri(2,6),c=ri(2,7),d2=ri(2,5);return{q:`(${a}+${b})×(${c}−${d2>c?1:d2})`,ans:(a+b)*(c-(d2>c?1:d2)),eq:`= ${(a+b)*(c-(d2>c?1:d2))}`};}
-      if(d==='medium'){const a=ri(2,6),b=ri(2,5),c=ri(2,5),d2=ri(2,4),e=ri(2,4);return{q:`${a}×(${b}+(${c}−${d2>c?1:d2}))×${e}`,ans:a*(b+(c-(d2>c?1:d2)))*e,eq:`= ${a*(b+(c-(d2>c?1:d2)))*e}`};}
-      if(d==='hard'){const a=ri(2,7),b=ri(2,5),c=ri(2,5),d2=ri(2,4),e=ri(2,4),f=ri(2,3);return{q:`(${a}+${b})×${c}−${d2}×${e}+${f}`,ans:(a+b)*c-d2*e+f,eq:`= ${(a+b)*c-d2*e+f}`};}
-      const a=ri(2,6),b=ri(2,4),c=ri(2,5),d2=ri(2,4),e=ri(2,4),f=ri(2,3),g=ri(2,3);return{q:`${a}×(${b}+${c})−(${d2}+${e})×${f}+${g}`,ans:a*(b+c)-(d2+e)*f+g,eq:`= ${a*(b+c)-(d2+e)*f+g}`};
+      if(cls==='k1'){const sets={easy:[[1,2,1,4],[1,4,1,2]],medium:[[1,2,1,4],[3,4,1,4],[1,2,3,4]],hard:[[1,2,1,3],[2,3,1,4],[1,3,1,4]],legend:[[1,4,1,8],[3,8,1,4],[1,8,1,2]]}[d];const p=sets[ri(0,sets.length-1)];const[n1,d1,n2,d2]=p;const v1=n1/d1,v2=n2/d2;const bigger=v1>=v2?`${n1}/${d1}`:`${n2}/${d2}`;return{q:`Który ułamek jest większy?\n${n1}/${d1}  czy  ${n2}/${d2}`,ans:Math.max(v1,v2),ansStr:bigger,eq:`${bigger} jest większy`};}
+      if(cls==='k2'){const dn={easy:ri(2,3),medium:ri(2,4),hard:ri(2,6),legend:ri(2,8)}[d];const a=ri(1,dn-1),b=ri(1,dn-1);const isA=Math.random()<.5;if(isA)return{q:`${a}/${dn} + ${b}/${dn}`,ans:simp(a+b,dn)[0]/simp(a+b,dn)[1],ansStr:fstr(a+b,dn),eq:`= ${fstr(a+b,dn)}`};const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`${bg}/${dn} − ${sm}/${dn}`,ans:simp(bg-sm,dn)[0]/simp(bg-sm,dn)[1],ansStr:fstr(bg-sm,dn),eq:`= ${fstr(bg-sm,dn)}`};}
+      if(cls==='k3'){if(d==='easy'||d==='medium'){const dn={easy:ri(2,6),medium:ri(2,10)}[d];const a=ri(1,dn-1),b=ri(1,dn-1);const isA=Math.random()<.5;if(isA)return{q:`${a}/${dn} + ${b}/${dn}`,ans:simp(a+b,dn)[0]/simp(a+b,dn)[1],ansStr:fstr(a+b,dn),eq:`= ${fstr(a+b,dn)}`};const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`${bg}/${dn} − ${sm}/${dn}`,ans:simp(bg-sm,dn)[0]/simp(bg-sm,dn)[1],ansStr:fstr(bg-sm,dn),eq:`= ${fstr(bg-sm,dn)}`};}const d1=ri(2,5),mul=ri(2,3),d2=d1*mul,a=ri(1,d1-1),b=ri(1,d2-1);const isA=Math.random()<.5;const num=isA?a*d2+b*d1:Math.abs(a*d2-b*d1);const[rn,rd]=simp(num,d1*d2);return{q:`${a}/${d1} ${isA?'+':'−'} ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};}
+      if(cls==='k4'){if(d==='hard'){const dn=ri(2,8),a=ri(1,dn-1),b=ri(1,dn-1),c=ri(1,dn-1);const res=Math.abs(a+b-c);return{q:`${a}/${dn}+${b}/${dn}−${c}/${dn}`,ans:simp(res,dn)[0]/simp(res,dn)[1],ansStr:fstr(res,dn),eq:`= ${fstr(res,dn)}`};}const lim={easy:[2,8],medium:[2,12],legend:[2,15]}[d]||[2,12];const d1=ri(lim[0],lim[1]),d2=ri(lim[0],lim[1]),a=ri(1,d1-1),b=ri(1,d2-1);const isA=Math.random()<.5;const num=isA?a*d2+b*d1:Math.abs(a*d2-b*d1);const[rn,rd]=simp(num,d1*d2);return{q:`${a}/${d1} ${isA?'+':'−'} ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};}
+      if(d==='hard'||d==='legend'){const d1=ri(2,8),d2=ri(2,8),a=ri(1,d1),b=ri(1,d2);const[rn,rd]=simp(a*d2,d1*b);return{q:`${a}/${d1} ÷ ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};}
+      const lim={easy:[2,6],medium:[2,10]}[d];const d1=ri(lim[0],lim[1]),d2=ri(lim[0],lim[1]),a=ri(1,d1),b=ri(1,d2);const[rn,rd]=simp(a*b,d1*d2);return{q:`${a}/${d1} × ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};
     },
-    wrongs(ans,cls,d){
-      const sp={k1:{easy:6,medium:10,hard:10,legend:10},k2:{easy:15,medium:20,hard:30,legend:25},k3:{easy:20,medium:30,hard:40,legend:50},k4:{easy:40,medium:60,hard:80,legend:100},k5:{easy:60,medium:100,hard:120,legend:150}}[cls][d];
-      return nbInts(ans,4,Math.max(0,ans-sp),ans+sp);
-    }
+    wrongs(ans,cls,d,card){const as=card.ansStr||String(ans);const pool=new Set([as]);let t=0;while(pool.size<4&&t++<400){const dn=ri(2,12),nm=ri(1,dn+2);const[sn,sd]=simp(nm,dn);const s=sd===1?`${sn}`:`${sn}/${sd}`;if(s!==as)pool.add(s);}return sfl([...pool]);}
   },
-
-  /* ── UŁAMKI ── */
-  fractions:{
-    icon:'🍕', name:'Ułamki',
-    classDesc:{
-      k1:'½, ¼, ¾ — rozpoznawanie i porównywanie',
-      k2:'Proste ułamki zwykłe',
-      k3:'Dodawanie i odejmowanie ułamków',
-      k4:'Ułamki różnych mianowników',
-      k5:'Mnożenie i dzielenie ułamków',
-    },
-    diffDesc:{
-      k1:{easy:'½ czy ¼?',              medium:'½, ¼, ¾ — który większy?', hard:'½, ¼, ¾, ⅓ — porównaj',  legend:'ulam. do 1/8 — porównaj'},
-      k2:{easy:'+ i − mian. 2–3',       medium:'+ i − mian. 2–4',          hard:'+ i − mian. 2–6',         legend:'+ i − mian. 2–8'},
-      k3:{easy:'ten sam mian. 2–6',     medium:'ten sam mian. 2–10',        hard:'różne mian. (x2)',        legend:'różne mian. (dowolne)'},
-      k4:{easy:'różne mian. 2–8',       medium:'różne mian. 2–12',          hard:'trzy ułamki +/−',         legend:'mieszane duże mian.'},
-      k5:{easy:'mnożenie mian. 2–6',    medium:'mnożenie mian. 2–10',       hard:'dzielenie ułamków',       legend:'mnożenie + dzielenie'},
-    },
+  geometry:{icon:'📐',name:'Pola i obwody figur',
+    classDesc:{k1:'Obwód kwadratu',k2:'Pole i obwód kwadratu',k3:'Pole i obwód prostokąta',k4:'Pole i obwód trójkąta',k5:'Wszystkie figury'},
+    diffDesc:{k1:{easy:'obwód a=2–6',medium:'obwód a=3–10',hard:'obwód a=5–15',legend:'obwód a=8–20'},k2:{easy:'pole a=2–7',medium:'pole i obwód a=2–8',hard:'pole i obwód a=4–12',legend:'pole i obwód a=6–16'},k3:{easy:'pole prostokąta 2–8',medium:'obwód prostokąta 3–12',hard:'pole i obwód 4–15',legend:'pole i obwód 5–20'},k4:{easy:'pole trójkąta a=4–10',medium:'obwód trójkąta',hard:'pole i obwód',legend:'mieszane figury'},k5:{easy:'trójkąt mieszane',medium:'prostokąt i trójkąt',hard:'kwadrat+prostokąt+trójkąt',legend:'wszystkie mieszane'}},
     gen(cls,d){
-      // k1 — comparison
-      if(cls==='k1'){
-        const sets={
-          easy:[[1,2,1,4],[1,4,1,2],[1,2,1,2]],
-          medium:[[1,2,1,4],[3,4,1,4],[1,2,3,4]],
-          hard:[[1,2,1,3],[2,3,1,4],[1,3,1,4]],
-          legend:[[1,4,1,8],[3,8,1,4],[1,8,1,2]],
-        }[d];
-        const p=sets[ri(0,sets.length-1)];
-        const[n1,d1,n2,d2]=p;const v1=n1/d1,v2=n2/d2;
-        const bigger=v1>=v2?`${n1}/${d1}`:`${n2}/${d2}`;
-        return{q:`Który ułamek jest większy?\n${n1}/${d1}  czy  ${n2}/${d2}`,ans:Math.max(v1,v2),ansStr:bigger,eq:`${bigger} jest większy`};
-      }
-      // k2 — simple same-denominator
-      if(cls==='k2'){
-        const dn={easy:ri(2,3),medium:ri(2,4),hard:ri(2,6),legend:ri(2,8)}[d];
-        const a=ri(1,dn-1),b=ri(1,dn-1);
-        const isA=Math.random()<.5;
-        if(isA){return{q:`${a}/${dn} + ${b}/${dn}`,ans:simp(a+b,dn)[0]/simp(a+b,dn)[1],ansStr:fstr(a+b,dn),eq:`= ${fstr(a+b,dn)}`};}
-        const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`${bg}/${dn} − ${sm}/${dn}`,ans:simp(bg-sm,dn)[0]/simp(bg-sm,dn)[1],ansStr:fstr(bg-sm,dn),eq:`= ${fstr(bg-sm,dn)}`};
-      }
-      // k3
-      if(cls==='k3'){
-        if(d==='easy'||d==='medium'){
-          const dn={easy:ri(2,6),medium:ri(2,10)}[d];
-          const a=ri(1,dn-1),b=ri(1,dn-1);const isA=Math.random()<.5;
-          if(isA){return{q:`${a}/${dn} + ${b}/${dn}`,ans:simp(a+b,dn)[0]/simp(a+b,dn)[1],ansStr:fstr(a+b,dn),eq:`= ${fstr(a+b,dn)}`};}
-          const[bg,sm]=a>=b?[a,b]:[b,a];return{q:`${bg}/${dn} − ${sm}/${dn}`,ans:simp(bg-sm,dn)[0]/simp(bg-sm,dn)[1],ansStr:fstr(bg-sm,dn),eq:`= ${fstr(bg-sm,dn)}`};
-        }
-        // hard/legend — different denominators (multiply one)
-        const d1=ri(2,5),mul=ri(2,3),d2=d1*mul,a=ri(1,d1-1),b=ri(1,d2-1);
-        const isA=Math.random()<.5;const num=isA?a*d2+b*d1:Math.abs(a*d2-b*d1);
-        const[rn,rd]=simp(num,d1*d2);return{q:`${a}/${d1} ${isA?'+':'−'} ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};
-      }
-      // k4
-      if(cls==='k4'){
-        if(d==='hard'){// 3 fractions
-          const dn=ri(2,8),a=ri(1,dn-1),b=ri(1,dn-1),c=ri(1,dn-1);
-          const[rn,rd]=simp(a+b-c,dn);return{q:`${a}/${dn}+${b}/${dn}−${c}/${dn}`,ans:rn/rd,ansStr:fstr(a+b-c>0?a+b-c:Math.abs(a+b-c),dn),eq:`= ${fstr(Math.abs(a+b-c),dn)}`};
-        }
-        const lim={easy:[2,8],medium:[2,12],legend:[2,15]}[d]||[2,12];
-        const d1=ri(lim[0],lim[1]),d2=ri(lim[0],lim[1]),a=ri(1,d1-1),b=ri(1,d2-1);
-        const isA=Math.random()<.5;const num=isA?a*d2+b*d1:Math.abs(a*d2-b*d1);
-        const[rn,rd]=simp(num,d1*d2);return{q:`${a}/${d1} ${isA?'+':'−'} ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};
-      }
-      // k5 — multiplication / division
-      if(d==='hard'||d==='legend'){
-        const d1=ri(2,8),d2=ri(2,8),a=ri(1,d1),b=ri(1,d2);
-        const[rn,rd]=simp(a*d2,d1*b);return{q:`${a}/${d1} ÷ ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};
-      }
-      const lim={easy:[2,6],medium:[2,10]}[d];
-      const d1=ri(lim[0],lim[1]),d2=ri(lim[0],lim[1]),a=ri(1,d1),b=ri(1,d2);
-      const[rn,rd]=simp(a*b,d1*d2);return{q:`${a}/${d1} × ${b}/${d2}`,ans:rn/rd,ansStr:fstr(rn,rd),eq:`= ${fstr(rn,rd)}`};
-    },
-    wrongs(ans,cls,d,card){
-      const as=card.ansStr||String(ans);const pool=new Set([as]);let t=0;
-      while(pool.size<4&&t++<400){const dn=ri(2,12),nm=ri(1,dn+2);const[sn,sd]=simp(nm,dn);const s=sd===1?`${sn}`:`${sn}/${sd}`;if(s!==as)pool.add(s);}
-      return sfl([...pool]);
-    }
-  },
-
-  /* ── GEOMETRIA ── */
-  geometry:{
-    icon:'📐', name:'Pola i obwody figur',
-    classDesc:{
-      k1:'Obwód kwadratu',
-      k2:'Pole i obwód kwadratu',
-      k3:'Pole i obwód prostokąta',
-      k4:'Pole i obwód trójkąta',
-      k5:'Wszystkie figury',
-    },
-    diffDesc:{
-      k1:{easy:'obwód kwadratu a=2–6',  medium:'obwód kwadratu a=3–10', hard:'obwód kwadratu a=5–15', legend:'obwód kwadratu a=8–20'},
-      k2:{easy:'pole kwadratu a=2–7',    medium:'pole i obwód a=2–8',    hard:'pole i obwód a=4–12',   legend:'pole i obwód a=6–16'},
-      k3:{easy:'pole prostokąta 2–8',    medium:'obwód prostokąta 3–12', hard:'pole i obwód 4–15',     legend:'pole i obwód 5–20'},
-      k4:{easy:'pole trójkąta a=4–10',   medium:'obwód trójkąta',        hard:'pole i obwód trójkąta', legend:'mieszane figury'},
-      k5:{easy:'trójkąt mieszane',       medium:'prostokąt i trójkąt',   hard:'kwadrat+prostokąt+trójkąt',legend:'wszystkie mieszane'},
-    },
-    gen(cls,d){
-      if(cls==='k1'){
-        const lim={easy:[2,6],medium:[3,10],hard:[5,15],legend:[8,20]}[d];
-        const a=ri(lim[0],lim[1]);return{q:`Obwód kwadratu\na = ${a}`,ans:4*a,eq:`O = 4×${a} = ${4*a}`};
-      }
-      if(cls==='k2'){
-        const lim={easy:[2,7],medium:[2,8],hard:[4,12],legend:[6,16]}[d];
-        const a=ri(lim[0],lim[1]);
-        if(d==='easy'||Math.random()<.5)return{q:`Pole kwadratu\na = ${a}`,ans:a*a,eq:`P = ${a}×${a} = ${a*a}`};
-        return{q:`Obwód kwadratu\na = ${a}`,ans:4*a,eq:`O = 4×${a} = ${4*a}`};
-      }
-      if(cls==='k3'){
-        const lim={easy:[2,8],medium:[3,12],hard:[4,15],legend:[5,20]}[d];
-        const a=ri(lim[0],lim[1]),b=ri(lim[0],lim[1]);
-        if(d==='easy'||Math.random()<.5)return{q:`Pole prostokąta\na = ${a}, b = ${b}`,ans:a*b,eq:`P = ${a}×${b} = ${a*b}`};
-        return{q:`Obwód prostokąta\na = ${a}, b = ${b}`,ans:2*(a+b),eq:`O = 2×(${a}+${b}) = ${2*(a+b)}`};
-      }
-      if(cls==='k4'){
-        if(d==='easy'){const a=ri(4,12),h=ri(3,10);return{q:`Pole trójkąta\na = ${a}, h = ${h}`,ans:Math.round(a*h/2),eq:`P = (${a}×${h})÷2 = ${Math.round(a*h/2)}`};}
-        if(d==='medium'){const a=ri(4,12),b=ri(3,10),c=ri(4,13);return{q:`Obwód trójkąta\na=${a}, b=${b}, c=${c}`,ans:a+b+c,eq:`O = ${a+b+c}`};}
-        if(d==='hard'){return Math.random()<.5?(()=>{const a=ri(4,14),h=ri(3,10);return{q:`Pole trójkąta\na=${a}, h=${h}`,ans:Math.round(a*h/2),eq:`P=${Math.round(a*h/2)}`};})():(()=>{const a=ri(4,12),b=ri(3,10),c=ri(4,13);return{q:`Obwód trójkąta\na=${a}, b=${b}, c=${c}`,ans:a+b+c,eq:`O=${a+b+c}`};})();}
-        // legend — mix trójkąt + prostokąt
-        const r=ri(0,1);
-        if(r===0){const a=ri(4,12),h=ri(3,10);return{q:`Pole trójkąta\na=${a}, h=${h}`,ans:Math.round(a*h/2),eq:`P=${Math.round(a*h/2)}`};}
-        const a=ri(3,12),b=ri(3,10);return{q:`Pole prostokąta\na=${a}, b=${b}`,ans:a*b,eq:`P=${a*b}`};
-      }
-      // k5 — all shapes mixed
+      if(cls==='k1'){const l={easy:[2,6],medium:[3,10],hard:[5,15],legend:[8,20]}[d];const a=ri(l[0],l[1]);return{q:`Obwód kwadratu\na = ${a}`,ans:4*a,eq:`O = 4×${a} = ${4*a}`};}
+      if(cls==='k2'){const l={easy:[2,7],medium:[2,8],hard:[4,12],legend:[6,16]}[d];const a=ri(l[0],l[1]);if(d==='easy'||Math.random()<.5)return{q:`Pole kwadratu\na = ${a}`,ans:a*a,eq:`P = ${a}² = ${a*a}`};return{q:`Obwód kwadratu\na = ${a}`,ans:4*a,eq:`O = 4×${a} = ${4*a}`};}
+      if(cls==='k3'){const l={easy:[2,8],medium:[3,12],hard:[4,15],legend:[5,20]}[d];const a=ri(l[0],l[1]),b=ri(l[0],l[1]);if(d==='easy'||Math.random()<.5)return{q:`Pole prostokąta\na = ${a}, b = ${b}`,ans:a*b,eq:`P = ${a}×${b} = ${a*b}`};return{q:`Obwód prostokąta\na = ${a}, b = ${b}`,ans:2*(a+b),eq:`O = 2×(${a}+${b}) = ${2*(a+b)}`};}
+      if(cls==='k4'){if(d==='easy'){const a=ri(4,12),h=ri(3,10);return{q:`Pole trójkąta\na = ${a}, h = ${h}`,ans:Math.round(a*h/2),eq:`P = (${a}×${h})÷2 = ${Math.round(a*h/2)}`};}if(d==='medium'){const a=ri(4,12),b=ri(3,10),c=ri(4,13);return{q:`Obwód trójkąta\na=${a}, b=${b}, c=${c}`,ans:a+b+c,eq:`O = ${a+b+c}`};}return Math.random()<.5?(()=>{const a=ri(4,14),h=ri(3,10);return{q:`Pole trójkąta\na=${a}, h=${h}`,ans:Math.round(a*h/2),eq:`P=${Math.round(a*h/2)}`};})():(()=>{const a=ri(4,12),b=ri(3,10),c=ri(4,13);return{q:`Obwód trójkąta\na=${a}, b=${b}, c=${c}`,ans:a+b+c,eq:`O=${a+b+c}`};})();}
       const r={easy:ri(0,1),medium:ri(0,2),hard:ri(0,3),legend:ri(0,3)}[d];
       if(r===0){const a=ri(4,14),h=ri(3,10);return{q:`Pole trójkąta\na=${a}, h=${h}`,ans:Math.round(a*h/2),eq:`P=${Math.round(a*h/2)}`};}
       if(r===1){const a=ri(3,14),b=ri(3,12);return Math.random()<.5?{q:`Pole prostokąta\na=${a}, b=${b}`,ans:a*b,eq:`P=${a*b}`}:{q:`Obwód prostokąta\na=${a}, b=${b}`,ans:2*(a+b),eq:`O=${2*(a+b)}`};}
@@ -964,29 +870,29 @@ const CATS={
 
 /* ══ GAME ══ */
 function startGame(){
-  const p=actProf(); if(!p)return;
-  updStreak(p); sveP(); refreshXP(); isRev=oRev;
+  const p=actProf();if(!p)return;
+  updStreak(p);sveP();refreshXP();isRev=oRev;
   const cls=p.cls||'k3';
-  cards=[];
-  if(isRev){const wq=getWkQ(selCatId);let t=0;while(cards.length<TOTAL&&t++<600){const c=CATS[selCatId].gen(cls,selDiff);if(wq.includes(c.q))cards.push(c);}while(cards.length<TOTAL)cards.push(CATS[selCatId].gen(cls,selDiff));sfl(cards);}
-  else{while(cards.length<TOTAL)cards.push(CATS[selCatId].gen(cls,selDiff));}
+  cardPool=[];poolIdx=0; // reset pool for new session
+  const wq=isRev?getWkQ(selCatId):null;
+  cards=dealCards(selCatId,cls,selDiff,TOTAL,wq);
   cur=0;score=0;errs=0;p1s=0;p2s=0;actP=1;
   document.getElementById('sbd').textContent='⭐ 0';
   const pi=document.getElementById('pind');
   if(mode==='2p'){pi.classList.remove('hidden');pi.className='pind p1';pi.textContent='👤 Gracz 1 — Twoja kolej!';}
   else pi.classList.add('hidden');
-  sfxSt(); showScreen('sg'); loadCard();
+  sfxSt();showScreen('sg');loadCard();
 }
 
 function loadCard(){
-  stopTmr(); revealed=false;
+  stopTmr();revealed=false;
   const card=cards[cur];
   document.getElementById('cq').textContent=card.q;
   document.getElementById('ca').textContent=card.ansStr||card.ans;
   document.getElementById('ceq').textContent=card.eq;
-  document.getElementById('ci').classList.remove('fl');
+  document.getElementById('ci').classList.remove('fl','flash-ok','flash-no');
   updProg();
-  const p=actProf(); const w=p&&p.weakSpots&&p.weakSpots[selCatId]||{};
+  const p=actProf();const w=p&&p.weakSpots&&p.weakSpots[selCatId]||{};
   document.getElementById('wkp').classList.toggle('hidden',!(w[card.q]>=2));
   const isQ=mode==='quiz'||mode==='2p';
   if(isQ){
@@ -1005,7 +911,7 @@ function loadCard(){
 }
 
 function buildQ(card){
-  const g=document.getElementById('ag'); g.innerHTML='';
+  const g=document.getElementById('ag');g.innerHTML='';
   const cls=profClass();
   const opts=CATS[selCatId].wrongs(card.ans,cls,selDiff,card);
   opts.forEach(opt=>{const btn=document.createElement('button');btn.className='ab';btn.textContent=opt;btn.onclick=()=>chkAns(opt,card.ansStr||card.ans,btn,card);g.appendChild(btn);});
@@ -1014,14 +920,22 @@ function chkAns(sel,cor,btn,card){
   stopTmr();
   document.querySelectorAll('.ab').forEach(b=>b.onclick=null);
   const hit=String(sel)===String(cor);
-  if(hit){btn.classList.add('ok');sfxOk();if(mode==='2p')actP===1?p1s++:p2s++;else score++;recWk(selCatId,card.q,true);}
-  else{
+  const ci=document.getElementById('ci');
+  if(hit){
+    btn.classList.add('ok');sfxOk();
+    ci.classList.add('flash-ok');
+    spawnParticles(true);
+    if(mode==='2p')actP===1?p1s++:p2s++;else score++;
+    recWk(selCatId,card.q,true);
+  }else{
     btn.classList.add('no');sfxErr();errs++;
-    const ci=document.getElementById('ci');ci.classList.add('shk');setTimeout(()=>ci.classList.remove('shk'),400);
+    ci.classList.add('shk','flash-no');
+    spawnParticles(false);
+    setTimeout(()=>ci.classList.remove('shk'),400);
     document.querySelectorAll('.ab').forEach(b=>{if(String(b.textContent)===String(cor))b.classList.add('ok');});
     recWk(selCatId,card.q,false);
   }
-  document.getElementById('ci').classList.add('fl');
+  ci.classList.add('fl');
   document.getElementById('sbd').textContent=mode==='2p'?`🔵${p1s} 🔴${p2s}`:`⭐ ${score}`;
   setTimeout(()=>{
     if(mode==='2p'&&cur<TOTAL-1){actP=actP===1?2:1;const pi=document.getElementById('pind');pi.className='pind '+(actP===1?'p1':'p2');pi.textContent=(actP===1?'👤 Gracz 1':'👤 Gracz 2')+' — Twoja kolej!';}
@@ -1030,7 +944,7 @@ function chkAns(sel,cor,btn,card){
 }
 function hCC(){if(mode==='flip'&&!revealed)revCard();}
 function revCard(){document.getElementById('ci').classList.add('fl');document.getElementById('rvb').classList.add('hidden');document.getElementById('fla').classList.remove('hidden');revealed=true;}
-function flAns(ok){const card=cards[cur];if(ok){score++;sfxOk();recWk(selCatId,card.q,true);}else{errs++;sfxErr();recWk(selCatId,card.q,false);}document.getElementById('sbd').textContent=`⭐ ${score}`;nxtCard();}
+function flAns(ok){const card=cards[cur];if(ok){score++;sfxOk();spawnParticles(true);recWk(selCatId,card.q,true);}else{errs++;sfxErr();spawnParticles(false);recWk(selCatId,card.q,false);}document.getElementById('sbd').textContent=`⭐ ${score}`;nxtCard();}
 
 function startTmr(){
   tmrLeft=10;document.getElementById('tmrw').classList.remove('hidden');
@@ -1046,8 +960,33 @@ function updProg(){const pct=(cur/TOTAL)*100;document.getElementById('pfill').st
 
 function showRes(){
   stopTmr();const p=actProf();const pct=Math.round((score/TOTAL)*100);
-  const xpE=score*5+(pct===100?30:pct>=80?15:pct>=60?5:0)+(isRev?10:0);
-  if(p&&mode!=='2p'){addXP(p,xpE);if(!p.history)p.history=[];p.history.unshift({date:new Date().toLocaleDateString('pl'),cat:CATS[selCatId].name,catIcon:CATS[selCatId].icon,diff:selDiff,cls:p.cls,score,total:TOTAL,pct});if(p.history.length>10)p.history.pop();sveP();refreshXP();refreshWk();}
+  const xpE=score*5+(pct===100?30:pct>=80?15:pct>=60?5:0)+(isRev?10:0)+(selDiff==='legend'?10:selDiff==='hard'?5:0)+(oTimer?5:0);
+  // Update profile stats
+  if(p&&mode!=='2p'){
+    addXP(p,xpE);
+    p.totalSessions=(p.totalSessions||0)+1;
+    p.bestPct=Math.max(p.bestPct||0,pct);
+    if(!p.catsPlayed)p.catsPlayed=[];
+    if(!p.catsPlayed.includes(selCatId))p.catsPlayed.push(selCatId);
+    if(selDiff==='legend')p.legendDone=true;
+    if(pct===100&&TOTAL>=10)p.hadPerfectSession=true;
+    if(oTimer&&pct>=60)p.timerDone=true;
+    if(!p.history)p.history=[];
+    p.history.unshift({date:new Date().toLocaleDateString('pl'),cat:CATS[selCatId].name,catIcon:CATS[selCatId].icon,diff:selDiff,cls:p.cls,score,total:TOTAL,pct});
+    if(p.history.length>10)p.history.pop();
+    // Check badges
+    const newBadges=checkBadges(p);
+    sveP();refreshXP();refreshWk();
+    // Show new badges on results
+    const nbb=document.getElementById('new-badges-box');
+    const nbl=document.getElementById('new-badges-list');
+    nbl.innerHTML='';
+    if(newBadges.length){
+      nbb.classList.remove('hidden');
+      newBadges.forEach(bd=>{const s=document.createElement('div');s.className='badge new';s.textContent=bd.ico+' '+bd.name;nbl.appendChild(s);});
+      setTimeout(()=>queueUnlock(newBadges.map(bd=>({ico:bd.ico,name:'Nowa odznaka!',desc:bd.name+' — '+bd.desc}))),800);
+    }else nbb.classList.add('hidden');
+  }
   showScreen('sr');
   if(mode==='2p'){
     document.getElementById('spst').classList.add('hidden');document.getElementById('tpst').classList.remove('hidden');
@@ -1058,7 +997,7 @@ function showRes(){
   }else{
     document.getElementById('spst').classList.remove('hidden');document.getElementById('tpst').classList.add('hidden');
     document.getElementById('sok').textContent=score;document.getElementById('ser').textContent=errs;document.getElementById('spc').textContent=pct+'%';
-    document.getElementById('xpgn').textContent='+'+xpE+' XP';document.getElementById('xpgl').textContent=isRev?'Bonus za powtórkę!':'Zdobyte doświadczenie';
+    document.getElementById('xpgn').textContent='+'+xpE+' XP';document.getElementById('xpgl').textContent=isRev?'Bonus za powtórkę!':oTimer?'+5 XP za timer!':'Zdobyte doświadczenie';
     let icon,title,sub;
     if(pct===100){icon='🏆';title='Perfekcja!';sub='Bezbłędny wynik!';lConf();}
     else if(pct>=80){icon='🎉';title='Świetnie!';sub='Naprawdę dobry wynik!';}
@@ -1078,6 +1017,32 @@ function showHist(){
   showScreen('sh');
 }
 
+function showBadges(){
+  const p=actProf();const list=document.getElementById('badges-list');list.innerHTML='';
+  const earned=p&&p.badges||[];
+  const rk=getRank(p&&p.xp||0);
+  BADGE_DEFS.forEach(bd=>{
+    const isEarned=earned.includes(bd.id);
+    const div=document.createElement('div');div.className='badge-item'+(isEarned?' earned':' locked');
+    div.innerHTML=`<div class="badge-ico">${isEarned?bd.ico:'🔒'}</div><div class="badge-inf"><div class="badge-nm">${bd.name}</div><div class="badge-ds">${bd.desc}</div></div>${isEarned?'<div class="badge-earned-lbl">Zdobyta ✓</div>':''}`;
+    list.appendChild(div);
+  });
+  // Avatar unlocks
+  const divider=document.createElement('div');divider.className='lbl';divider.style.marginTop='16px';divider.textContent='Awatary do odblokowania';list.appendChild(divider);
+  const avGrid=document.createElement('div');avGrid.style.cssText='display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;margin-bottom:12px;';
+  AVTS_ALL.forEach((av,i)=>{
+    const rankNeeded=AV_UNLOCK[i];
+    const isUnlocked=rk.idx>=rankNeeded;
+    const d=document.createElement('div');
+    d.style.cssText=`background:var(--sf);border-radius:12px;padding:8px 4px;text-align:center;font-size:1.4rem;opacity:${isUnlocked?'1':'.3'};position:relative;`;
+    d.textContent=av;
+    if(!isUnlocked){const lb=document.createElement('div');lb.style.cssText='font-size:.55rem;color:var(--mu);font-weight:800;margin-top:2px;';lb.textContent=RANKS[rankNeeded]?.n?.split(' ')[1]||'?';d.appendChild(lb);}
+    avGrid.appendChild(d);
+  });
+  list.appendChild(avGrid);
+  showScreen('sbdg');
+}
+
 /* ══ CHEATSHEET ══ */
 let openF=null;
 function togFig(n){const card=document.getElementById('fc-'+n),det=document.getElementById('fd-'+n);if(openF&&openF!==n){document.getElementById('fc-'+openF).classList.remove('open');document.getElementById('fd-'+openF).classList.remove('show');}const isO=card.classList.contains('open');card.classList.toggle('open',!isO);det.classList.toggle('show',!isO);openF=isO?null:n;if(!isO)setTimeout(()=>det.scrollIntoView({behavior:'smooth',block:'nearest'}),100);}
@@ -1087,14 +1052,7 @@ function goMenu(){stopTmr();showScreen('sd');}
 /* INIT */
 renderP();
 
-/* ══ PWA SERVICE WORKER ══ */
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('sw.js')
-      .then(()=>console.log('SW registered'))
-      .catch(e=>console.log('SW error',e));
-  });
-}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').then(()=>{}).catch(()=>{});});}
 </script>
 </body>
 </html>
