@@ -396,24 +396,27 @@ body.fs-large{font-size:1.1rem;}
         try { window._analytics.logEvent(name, params); } catch(e) {}
       };
       window._logSession = async function(data) {
-        const PROJECT = 'matmaapp-71a51';
-        const API_KEY = 'AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk';
-        const url = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/sessions?key=' + API_KEY;
-        function toFV(v) {
-          if(v===null||v===undefined) return {nullValue:null};
-          if(typeof v==='boolean') return {booleanValue:v};
-          if(typeof v==='number') return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v};
-          return {stringValue:String(v)};
-        }
-        const fields={};
-        Object.entries(data).forEach(([k,v])=>{fields[k]=toFV(v);});
-        fields['ts']={timestampValue:new Date().toISOString()};
+        // Use Google Analytics custom events (no rules/permissions needed)
         try {
-          const resp = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})});
-          if(resp.ok){console.log('Session saved to Firestore ✓');}
-          else{const e=await resp.json();console.warn('Firestore error:',e.error?.message);}
-        } catch(e){
-          console.warn('Firestore fetch failed:',e.message);
+          if(window._analytics) {
+            // Main session event with all key params
+            window._analytics.logEvent('session_complete', {
+              category:    data.category    || '',
+              difficulty:  data.difficulty  || '',
+              grade:       data.grade       || '',
+              mode:        data.mode        || '',
+              score_pct:   data.pct         || 0,
+              score:       data.score       || 0,
+              total_cards: data.total       || 0,
+              xp_earned:   data.xpEarned    || 0,
+              timer_used:  data.timer       ? 1 : 0,
+              boss_mode:   data.bossMode    ? 1 : 0,
+              app_version: data.appVersion  || 'v6',
+            });
+            console.log('Session tracked via Analytics ✓');
+          }
+        } catch(e) {
+          console.warn('Analytics logEvent failed:', e.message);
         }
       };
       console.log('Firebase compat initialized ✓');
