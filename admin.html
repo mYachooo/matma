@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Matma Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Nunito',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh;padding:20px;}
+.header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:16px;border-bottom:2px solid #232338;}
+.header h1{font-family:'Righteous',cursive;font-size:1.6rem;background:linear-gradient(135deg,#ffd93d,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ver-badge{background:#c94bff22;border:1px solid #c94bff;color:#c94bff;font-family:'Righteous',cursive;font-size:.78rem;padding:4px 12px;border-radius:99px;}
+.login-box{max-width:320px;margin:80px auto;background:#1a1a2e;border-radius:20px;padding:28px 22px;text-align:center;}
+.login-box h2{font-family:'Righteous',cursive;font-size:1.2rem;margin-bottom:18px;color:#ffd93d;}
+.login-box input{width:100%;padding:11px 13px;background:#232338;border:2px solid transparent;border-radius:12px;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.95rem;outline:none;margin-bottom:12px;}
+.login-box input:focus{border-color:#4d96ff;}
+.login-box button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#4d96ff,#6bcb77);color:#0f0e17;font-family:'Righteous',cursive;font-size:1rem;cursor:pointer;}
+.login-error{color:#ff6b6b;font-size:.8rem;margin-top:8px;display:none;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
+.stat-card{background:#1a1a2e;border-radius:16px;padding:16px 14px;border:1px solid #232338;}
+.stat-val{font-family:'Righteous',cursive;font-size:2rem;margin-bottom:4px;}
+.stat-lbl{font-size:.72rem;color:#a7a9be;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-bottom:28px;}
+.chart-card{background:#1a1a2e;border-radius:16px;padding:18px;border:1px solid #232338;}
+.chart-card h3{font-family:'Righteous',cursive;font-size:1rem;margin-bottom:14px;color:#ffd93d;}
+.table-card{background:#1a1a2e;border-radius:16px;padding:18px;border:1px solid #232338;margin-bottom:18px;overflow-x:auto;}
+.table-card h3{font-family:'Righteous',cursive;font-size:1rem;margin-bottom:14px;color:#ffd93d;}
+table{width:100%;border-collapse:collapse;font-size:.82rem;}
+th{text-align:left;padding:8px 10px;color:#a7a9be;font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #232338;}
+td{padding:9px 10px;border-bottom:1px solid #23233866;}
+tr:hover td{background:#23233840;}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.68rem;font-weight:800;}
+.pill-easy{background:#6bcb7720;color:#6bcb77;}
+.pill-medium{background:#ffd93d20;color:#ffd93d;}
+.pill-hard{background:#ff6b6b20;color:#ff6b6b;}
+.pill-legend{background:#c94bff20;color:#c94bff;}
+.filter-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.filter-row select,.filter-row input{background:#232338;border:1px solid #3a3a5e;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.85rem;padding:8px 12px;border-radius:10px;outline:none;}
+.refresh-btn{padding:8px 16px;border:none;border-radius:10px;background:#4d96ff;color:#fff;font-family:'Righteous',cursive;font-size:.82rem;cursor:pointer;}
+.refresh-btn:active{opacity:.8;}
+.loading{text-align:center;padding:40px;color:#a7a9be;font-weight:700;}
+.section-title{font-family:'Righteous',cursive;font-size:1.1rem;color:#a7a9be;margin-bottom:14px;margin-top:8px;}
+#main-content{display:none;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-section">
+  <div class="login-box">
+    <div style="font-size:2.5rem;margin-bottom:12px;">🧮</div>
+    <h2>Matma Admin Panel</h2>
+    <input type="password" id="admin-pass" placeholder="Hasło admina" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Zaloguj się</button>
+    <div class="login-error" id="login-err">Złe hasło</div>
+  </div>
+</div>
+
+<!-- MAIN PANEL -->
+<div id="main-content">
+  <div class="header">
+    <div>
+      <h1>🧮 Matma Admin</h1>
+      <div style="font-size:.75rem;color:#a7a9be;margin-top:2px;">matmaapp-71a51 · Firebase Firestore</div>
+    </div>
+    <span class="ver-badge">v6</span>
+    <div style="margin-left:auto;display:flex;gap:10px;align-items:center;">
+      <span style="font-size:.75rem;color:#a7a9be;" id="last-refresh"></span>
+      <button class="refresh-btn" onclick="loadData()">🔄 Odśwież</button>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-row">
+    <select id="f-days" onchange="loadData()">
+      <option value="7">Ostatnie 7 dni</option>
+      <option value="30" selected>Ostatnie 30 dni</option>
+      <option value="90">Ostatnie 90 dni</option>
+      <option value="0">Wszystkie dane</option>
+    </select>
+    <select id="f-cat" onchange="applyFilters()">
+      <option value="">Wszystkie kategorie</option>
+      <option value="mult">Mnożenie</option>
+      <option value="div">Dzielenie</option>
+      <option value="addsub">Dodawanie/Odejmowanie</option>
+      <option value="brackets">Nawiasy</option>
+      <option value="fractions">Ułamki</option>
+      <option value="geometry">Geometria</option>
+      <option value="powers">Potęgi</option>
+    </select>
+    <select id="f-grade" onchange="applyFilters()">
+      <option value="">Wszystkie klasy</option>
+      <option value="k1">Klasa 1</option>
+      <option value="k2">Klasa 2</option>
+      <option value="k3">Klasa 3</option>
+      <option value="k4">Klasa 4</option>
+      <option value="k5">Klasa 5</option>
+    </select>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="stats-grid" id="kpi-grid">
+    <div class="stat-card"><div class="stat-val" id="kpi-sessions" style="color:#4d96ff">—</div><div class="stat-lbl">Sesji ogółem</div></div>
+    <div class="stat-card"><div class="stat-val" id="kpi-avg-pct" style="color:#6bcb77">—</div><div class="stat-lbl">Średni wynik</div></div>
+    <div class="stat-card"><div class="stat-val" id="kpi-perfect" style="color:#ffd93d">—</div><div class="stat-lbl">Perfekcyjnych sesji</div></div>
+    <div class="stat-card"><div class="stat-val" id="kpi-boss" style="color:#ff6b6b">—</div><div class="stat-lbl">Wygranych boss fight</div></div>
+    <div class="stat-card"><div class="stat-val" id="kpi-today" style="color:#c94bff">—</div><div class="stat-lbl">Sesji dziś</div></div>
+    <div class="stat-card"><div class="stat-val" id="kpi-xp" style="color:#ffd93d">—</div><div class="stat-lbl">XP rozdane łącznie</div></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <h3>📊 Sesje dziennie</h3>
+      <canvas id="chart-daily" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>📚 Popularne kategorie</h3>
+      <canvas id="chart-cats" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>🏫 Klasy</h3>
+      <canvas id="chart-grades" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>⚡ Poziomy trudności</h3>
+      <canvas id="chart-diff" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>📈 Średni wynik % per kategoria</h3>
+      <canvas id="chart-scores" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>🎮 Tryby gry</h3>
+      <canvas id="chart-modes" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- RECENT SESSIONS TABLE -->
+  <div class="table-card">
+    <h3>🕐 Ostatnie sesje</h3>
+    <table>
+      <thead><tr><th>Czas</th><th>Kategoria</th><th>Klasa</th><th>Poziom</th><th>Wynik</th><th>Karty</th><th>XP</th><th>Tryb</th></tr></thead>
+      <tbody id="sessions-table"></tbody>
+    </table>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, query, where, orderBy, limit, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
+  authDomain: "matmaapp-71a51.firebaseapp.com",
+  projectId: "matmaapp-71a51",
+  storageBucket: "matmaapp-71a51.firebasestorage.app",
+  messagingSenderId: "71014681518",
+  appId: "1:71014681518:web:c6031a9725611bd705163f",
+  measurementId: "G-4PM5VXJ9JX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ── SIMPLE PASSWORD ──
+// Change this to your own password!
+const ADMIN_PASS = 'matma2024admin';
+
+window.doLogin = function() {
+  const pass = document.getElementById('admin-pass').value;
+  if(pass === ADMIN_PASS) {
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+};
+
+// ── DATA ──
+let allData = [];
+let charts = {};
+
+const CAT_NAMES = {mult:'Mnożenie',div:'Dzielenie',addsub:'Dodaw./Odjm.',brackets:'Nawiasy',fractions:'Ułamki',geometry:'Geometria',powers:'Potęgi'};
+const GRADE_NAMES = {k1:'Klasa 1',k2:'Klasa 2',k3:'Klasa 3',k4:'Klasa 4',k5:'Klasa 5'};
+const DIFF_NAMES = {easy:'Łatwy',medium:'Średni',hard:'Trudny',legend:'Legenda'};
+const MODE_NAMES = {quiz:'Quiz',flip:'Fiszki','2p':'2 graczy',kbd:'Klawiatura'};
+const COLORS = ['#4d96ff','#6bcb77','#ffd93d','#ff6b6b','#c94bff','#ff9f43','#a7a9be'];
+
+window.loadData = async function() {
+  document.getElementById('kpi-sessions').textContent = '...';
+  const days = parseInt(document.getElementById('f-days').value);
+  try {
+    let q;
+    if(days > 0) {
+      const since = new Date();
+      since.setDate(since.getDate() - days);
+      q = query(
+        collection(db, 'sessions'),
+        where('ts', '>=', Timestamp.fromDate(since)),
+        orderBy('ts', 'desc'),
+        limit(2000)
+      );
+    } else {
+      q = query(collection(db, 'sessions'), orderBy('ts','desc'), limit(2000));
+    }
+    const snap = await getDocs(q);
+    allData = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    document.getElementById('last-refresh').textContent = 'Odświeżono: ' + new Date().toLocaleTimeString('pl');
+    applyFilters();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('kpi-sessions').textContent = 'Błąd';
+    alert('Błąd pobierania danych: ' + e.message + '\n\nSprawdź reguły Firestore w Firebase Console.\nUstaw: allow read, write: if true; (na czas testów)');
+  }
+};
+
+window.applyFilters = function() {
+  const cat = document.getElementById('f-cat').value;
+  const grade = document.getElementById('f-grade').value;
+  let data = allData;
+  if(cat) data = data.filter(d => d.category === cat);
+  if(grade) data = data.filter(d => d.grade === grade);
+  renderDashboard(data);
+};
+
+function renderDashboard(data) {
+  const n = data.length;
+  const today = new Date().toDateString();
+
+  // KPIs
+  document.getElementById('kpi-sessions').textContent = n;
+  document.getElementById('kpi-avg-pct').textContent = n ? Math.round(data.reduce((s,d)=>s+(d.pct||0),0)/n) + '%' : '—';
+  document.getElementById('kpi-perfect').textContent = data.filter(d=>d.pct===100).length;
+  document.getElementById('kpi-boss').textContent = data.filter(d=>d.bossMode).length;
+  document.getElementById('kpi-today').textContent = data.filter(d=>d.ts&&d.ts.toDate&&d.ts.toDate().toDateString()===today).length;
+  document.getElementById('kpi-xp').textContent = data.reduce((s,d)=>s+(d.xpEarned||0),0).toLocaleString();
+
+  // Daily sessions chart
+  const daily = {};
+  data.forEach(d => {
+    if(!d.ts?.toDate) return;
+    const day = d.ts.toDate().toLocaleDateString('pl',{day:'2-digit',month:'2-digit'});
+    daily[day] = (daily[day]||0) + 1;
+  });
+  const sortedDays = Object.keys(daily).sort((a,b)=>{
+    const [da,ma]=a.split('.').map(Number);
+    const [db,mb]=b.split('.').map(Number);
+    return (ma*100+da)-(mb*100+db);
+  });
+  makeChart('chart-daily','line',sortedDays,
+    [{label:'Sesje',data:sortedDays.map(k=>daily[k]),borderColor:'#4d96ff',backgroundColor:'#4d96ff22',tension:.3,fill:true}]
+  );
+
+  // Categories
+  const cats = countBy(data,'category');
+  makeChart('chart-cats','doughnut',Object.keys(cats).map(k=>CAT_NAMES[k]||k),
+    [{data:Object.values(cats),backgroundColor:COLORS}]
+  );
+
+  // Grades
+  const grades = countBy(data,'grade');
+  makeChart('chart-grades','bar',Object.keys(grades).map(k=>GRADE_NAMES[k]||k),
+    [{label:'Sesje',data:Object.values(grades),backgroundColor:'#6bcb77'}],{indexAxis:'y'}
+  );
+
+  // Difficulties
+  const diffs = countBy(data,'difficulty');
+  const diffOrder = ['easy','medium','hard','legend'];
+  makeChart('chart-diff','bar',diffOrder.map(k=>DIFF_NAMES[k]),
+    [{label:'Sesje',data:diffOrder.map(k=>diffs[k]||0),backgroundColor:['#6bcb77','#ffd93d','#ff6b6b','#c94bff']}]
+  );
+
+  // Avg score per category
+  const catScores = {};
+  const catCounts = {};
+  data.forEach(d=>{if(!d.category)return;catScores[d.category]=(catScores[d.category]||0)+(d.pct||0);catCounts[d.category]=(catCounts[d.category]||0)+1;});
+  const catKeys = Object.keys(catScores);
+  makeChart('chart-scores','bar',catKeys.map(k=>CAT_NAMES[k]||k),
+    [{label:'Śr. wynik %',data:catKeys.map(k=>Math.round(catScores[k]/catCounts[k])),backgroundColor:'#4d96ff'}]
+  );
+
+  // Modes
+  const modes = countBy(data,'mode');
+  makeChart('chart-modes','doughnut',Object.keys(modes).map(k=>MODE_NAMES[k]||k),
+    [{data:Object.values(modes),backgroundColor:COLORS}]
+  );
+
+  // Recent sessions table
+  const tbody = document.getElementById('sessions-table');
+  tbody.innerHTML = '';
+  data.slice(0,50).forEach(d => {
+    const tr = document.createElement('tr');
+    const time = d.ts?.toDate ? d.ts.toDate().toLocaleString('pl',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
+    const diffPill = `<span class="pill pill-${d.difficulty||''}">${DIFF_NAMES[d.difficulty]||d.difficulty||'—'}</span>`;
+    const pctColor = (d.pct||0)>=80?'#6bcb77':(d.pct||0)>=60?'#ffd93d':'#ff6b6b';
+    tr.innerHTML = `<td style="color:#a7a9be;font-size:.75rem">${time}</td><td>${CAT_NAMES[d.category]||d.category||'—'}</td><td>${GRADE_NAMES[d.grade]||d.grade||'—'}</td><td>${diffPill}</td><td style="color:${pctColor};font-weight:800">${d.pct||0}%</td><td>${d.score||0}/${d.total||0}</td><td style="color:#c94bff">+${d.xpEarned||0}</td><td style="color:#a7a9be">${MODE_NAMES[d.mode]||d.mode||'quiz'}</td>`;
+    tbody.appendChild(tr);
+  });
+  if(n===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="8" style="text-align:center;padding:24px;color:#a7a9be">Brak danych w tym zakresie. Zagraj kilka sesji w aplikacji!</td>';tbody.appendChild(tr);}
+}
+
+function countBy(data, key){const out={};data.forEach(d=>{if(d[key])out[d[key]]=(out[d[key]]||0)+1;});return out;}
+
+function makeChart(id, type, labels, datasets, extra={}) {
+  const canvas = document.getElementById(id);
+  if(!canvas) return;
+  if(charts[id]) { charts[id].destroy(); }
+  const isDoughnut = type === 'doughnut';
+  charts[id] = new Chart(canvas, {
+    type,
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: isDoughnut, labels: { color: '#a7a9be', font: { family: 'Nunito', weight: '700' }, boxWidth: 12 } },
+      },
+      scales: isDoughnut ? {} : {
+        x: { ticks: { color: '#a7a9be', font: { family: 'Nunito', size: 11 } }, grid: { color: '#23233860' } },
+        y: { ticks: { color: '#a7a9be', font: { family: 'Nunito', size: 11 } }, grid: { color: '#23233860' } },
+      },
+      ...extra,
+    }
+  });
+}
+</script>
+</body>
+</html>

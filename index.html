@@ -373,6 +373,45 @@ body.fs-large{font-size:1.1rem;}
 
 .hidden{display:none!important;}
 </style>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
+    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
+      authDomain: "matmaapp-71a51.firebaseapp.com",
+      projectId: "matmaapp-71a51",
+      storageBucket: "matmaapp-71a51.firebasestorage.app",
+      messagingSenderId: "71014681518",
+      appId: "1:71014681518:web:c6031a9725611bd705163f",
+      measurementId: "G-4PM5VXJ9JX"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const db = getFirestore(app);
+
+    // Expose globally so main script can call them
+    window._logEvent = (name, params) => {
+      try { logEvent(analytics, name, params); } catch(e) {}
+    };
+    window._logSession = async (data) => {
+      try {
+        await addDoc(collection(db, 'sessions'), {
+          ...data,
+          ts: serverTimestamp(),
+        });
+      } catch(e) { console.warn('Firestore write failed:', e.message); }
+    };
+
+    // Auto-track app open
+    logEvent(analytics, 'app_open', { version: 'v6' });
+    console.log('Firebase initialized ✓');
+  </script>
+
 </head>
 <body>
 <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
@@ -908,7 +947,12 @@ function buildCatList(){
 }
 
 let selCatId='mult', selDiff='easy', mode='quiz', oTimer=false, oRev=false;
-function selCatFn(el){document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selCatId=el.dataset.cat;const p=actProf();const hw=p&&p.weakSpots&&Object.values(p.weakSpots[selCatId]||{}).some(v=>v>=2);document.getElementById('orev').style.display=hw?'':'none';if(!hw&&oRev){oRev=false;document.getElementById('orev').classList.remove('rv');}}
+function selCatFn(el){document.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');selCatId=el.dataset.cat;
+
+  if(typeof window._logEvent === 'function') {
+    window._logEvent('category_selected', { category: selCatId });
+  }
+const p=actProf();const hw=p&&p.weakSpots&&Object.values(p.weakSpots[selCatId]||{}).some(v=>v>=2);document.getElementById('orev').style.display=hw?'':'none';if(!hw&&oRev){oRev=false;document.getElementById('orev').classList.remove('rv');}}
 function goDiff(){
   const cat=CAT_DEFS.find(c=>c.id===selCatId)||CAT_DEFS[0];
   const cls=actProf()?.cls||'k3';const cm=CLS_META[cls];
@@ -1147,6 +1191,16 @@ function showBossVic(){
   document.getElementById('bv-xp').textContent='+'+bonus+' XP';
   document.getElementById('boss-vic').classList.remove('hidden');
   lConf();sfxLv();
+
+    if(typeof window._logEvent === 'function') {
+      window._logEvent('boss_defeated', {
+        boss_name: bossCurrent ? bossCurrent.name : 'unknown',
+        category: selCatId,
+        score: score,
+        bonus_xp: bonus,
+      });
+    }
+
   if(p){addXP(p,bonus);p.bossKilled=true;sveP();refreshXP();}
 }
 function closeBossVic(){
@@ -1381,6 +1435,36 @@ function showRes(){
     // Badges
     const newBdgs=checkBadges(p);
     sveP();refreshXP();refreshWk();
+
+    // ── Firebase Analytics + Firestore ──
+    const _sessionData = {
+      // anonymous session stats — no personal data
+      category: selCatId,
+      difficulty: selDiff,
+      grade: p.cls || 'k3',
+      mode: mode,
+      score: score,
+      total: TOTAL,
+      pct: pct,
+      xpEarned: xpE,
+      timer: oTimer,
+      bossMode: bossMode,
+      newBadges: newBdgs.length,
+      appVersion: typeof APP_VERSION !== 'undefined' ? APP_VERSION : 'v6',
+    };
+    if(typeof window._logEvent === 'function') {
+      window._logEvent('session_complete', {
+        category: selCatId,
+        difficulty: selDiff,
+        grade: p.cls || 'k3',
+        score_pct: pct,
+        mode: mode,
+      });
+    }
+    if(typeof window._logSession === 'function') {
+      window._logSession(_sessionData);
+    }
+
     const nbb=document.getElementById('new-bdg-box'),nbl=document.getElementById('new-bdg-list');nbl.innerHTML='';
     if(newBdgs.length){nbb.classList.remove('hidden');newBdgs.forEach(b=>{const s=document.createElement('div');s.className='bdg new-bdg';s.textContent=b.ico+' '+b.name;nbl.appendChild(s);});setTimeout(()=>qUnlock(newBdgs.map(b=>({ico:b.ico,label:'Nowa odznaka: '+b.name}))),800);}
     else nbb.classList.add('hidden');
