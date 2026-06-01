@@ -374,13 +374,12 @@ body.fs-large{font-size:1.1rem;}
 .hidden{display:none!important;}
 </style>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getAnalytics, logEvent } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js';
-    import { getFirestore, collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
-    const firebaseConfig = {
+  <!-- Firebase SDK (compat - works with regular scripts) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const _fbConfig = {
       apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
       authDomain: "matmaapp-71a51.firebaseapp.com",
       projectId: "matmaapp-71a51",
@@ -389,27 +388,27 @@ body.fs-large{font-size:1.1rem;}
       appId: "1:71014681518:web:c6031a9725611bd705163f",
       measurementId: "G-4PM5VXJ9JX"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const db = getFirestore(app);
-
-    // Expose globally so main script can call them
-    window._logEvent = (name, params) => {
-      try { logEvent(analytics, name, params); } catch(e) {}
-    };
-    window._logSession = async (data) => {
-      try {
-        await addDoc(collection(db, 'sessions'), {
-          ...data,
-          ts: serverTimestamp(),
-        });
-      } catch(e) { console.warn('Firestore write failed:', e.message); }
-    };
-
-    // Auto-track app open
-    logEvent(analytics, 'app_open', { version: 'v6' });
-    console.log('Firebase initialized ✓');
+    try {
+      firebase.initializeApp(_fbConfig);
+      window._analytics = firebase.analytics();
+      window._db = firebase.firestore();
+      window._logEvent = function(name, params) {
+        try { window._analytics.logEvent(name, params); } catch(e) {}
+      };
+      window._logSession = async function(data) {
+        try {
+          await window._db.collection('sessions').add({...data, ts: firebase.firestore.FieldValue.serverTimestamp()});
+          console.log('Session saved to Firestore ✓');
+        } catch(e) {
+          console.warn('Firestore write failed:', e.message);
+        }
+      };
+      console.log('Firebase compat initialized ✓');
+    } catch(e) {
+      console.warn('Firebase init failed:', e.message);
+      window._logEvent = () => {};
+      window._logSession = async () => {};
+    }
   </script>
 
 </head>

@@ -148,10 +148,9 @@ tr:hover td{background:#23233840;}
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
   authDomain: "matmaapp-71a51.firebaseapp.com",
@@ -162,8 +161,8 @@ const firebaseConfig = {
   measurementId: "G-4PM5VXJ9JX"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // ── SIMPLE PASSWORD ──
 // Change this to your own password!
@@ -197,12 +196,8 @@ window.loadData = async function() {
     let q;
     // Simple query — no composite index needed
     // Date filtering done client-side
-    q = query(
-      collection(db, 'sessions'),
-      orderBy('ts', 'desc'),
-      limit(2000)
-    );
-    const snap = await getDocs(q);
+    q = db.collection('sessions').orderBy('ts', 'desc').limit(2000);
+    const snap = await q.get();
     let rawData = snap.docs.map(d => ({id: d.id, ...d.data()}));
     // Client-side date filter
     const days = parseInt(document.getElementById('f-days').value);
