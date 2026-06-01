@@ -396,11 +396,24 @@ body.fs-large{font-size:1.1rem;}
         try { window._analytics.logEvent(name, params); } catch(e) {}
       };
       window._logSession = async function(data) {
+        const PROJECT = 'matmaapp-71a51';
+        const API_KEY = 'AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk';
+        const url = 'https://firestore.googleapis.com/v1/projects/' + PROJECT + '/databases/(default)/documents/sessions?key=' + API_KEY;
+        function toFV(v) {
+          if(v===null||v===undefined) return {nullValue:null};
+          if(typeof v==='boolean') return {booleanValue:v};
+          if(typeof v==='number') return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v};
+          return {stringValue:String(v)};
+        }
+        const fields={};
+        Object.entries(data).forEach(([k,v])=>{fields[k]=toFV(v);});
+        fields['ts']={timestampValue:new Date().toISOString()};
         try {
-          await window._db.collection('sessions').add({...data, ts: firebase.firestore.FieldValue.serverTimestamp()});
-          console.log('Session saved to Firestore ✓');
-        } catch(e) {
-          console.warn('Firestore write failed:', e.message);
+          const resp = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({fields})});
+          if(resp.ok){console.log('Session saved to Firestore ✓');}
+          else{const e=await resp.json();console.warn('Firestore error:',e.error?.message);}
+        } catch(e){
+          console.warn('Firestore fetch failed:',e.message);
         }
       };
       console.log('Firebase compat initialized ✓');
