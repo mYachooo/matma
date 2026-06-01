@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Firebase Diagnostic</title></head>
+<body style="font-family:monospace;padding:20px;background:#111;color:#0f0">
+<h2>Firebase Firestore Diagnostic</h2>
+<div id="log"></div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+function log(msg, color) {
+  const d = document.getElementById('log');
+  d.innerHTML += '<div style="color:'+(color||'#0f0')+';margin:4px 0">' + msg + '</div>';
+  console.log(msg);
+}
+
+firebase.initializeApp({
+  apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
+  projectId: "matmaapp-71a51",
+  appId: "1:71014681518:web:c6031a9725611bd705163f"
+});
+const db = firebase.firestore();
+log('Firebase initialized');
+
+// Test 1: REST API write
+async function testREST() {
+  log('--- TEST 1: REST API write ---');
+  const url = 'https://firestore.googleapis.com/v1/projects/matmaapp-71a51/databases/(default)/documents/sessions?key=AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk';
+  try {
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({fields: {test: {stringValue: 'hello'}, ts: {timestampValue: new Date().toISOString()}}})
+    });
+    const data = await resp.json();
+    if(resp.ok) log('REST write OK: ' + data.name, '#0f0');
+    else log('REST write FAILED: ' + JSON.stringify(data.error), '#f00');
+  } catch(e) { log('REST error: ' + e.message, '#f00'); }
+}
+
+// Test 2: SDK write
+async function testSDK() {
+  log('--- TEST 2: SDK write ---');
+  try {
+    const ref = await db.collection('sessions').add({test: 'sdk', ts: firebase.firestore.FieldValue.serverTimestamp()});
+    log('SDK write OK: ' + ref.id, '#0f0');
+  } catch(e) { log('SDK write FAILED: ' + e.message, '#f00'); }
+}
+
+// Test 3: Check rules via REST read
+async function testRead() {
+  log('--- TEST 3: REST read ---');
+  const url = 'https://firestore.googleapis.com/v1/projects/matmaapp-71a51/databases/(default)/documents/sessions?key=AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk&pageSize=1';
+  try {
+    const resp = await fetch(url);
+    const data = await resp.json();
+    if(resp.ok) log('REST read OK, docs: ' + (data.documents?.length || 0), '#0f0');
+    else log('REST read FAILED: ' + JSON.stringify(data.error), '#f00');
+  } catch(e) { log('REST read error: ' + e.message, '#f00'); }
+}
+
+testREST().then(testSDK).then(testRead);
+</script>
+</body>
+</html>
