@@ -150,7 +150,7 @@ tr:hover td{background:#23233840;}
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, collection, query, where, orderBy, limit, getDocs, Timestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
@@ -195,20 +195,26 @@ window.loadData = async function() {
   const days = parseInt(document.getElementById('f-days').value);
   try {
     let q;
+    // Simple query — no composite index needed
+    // Date filtering done client-side
+    q = query(
+      collection(db, 'sessions'),
+      orderBy('ts', 'desc'),
+      limit(2000)
+    );
+    const snap = await getDocs(q);
+    let rawData = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    // Client-side date filter
+    const days = parseInt(document.getElementById('f-days').value);
     if(days > 0) {
       const since = new Date();
       since.setDate(since.getDate() - days);
-      q = query(
-        collection(db, 'sessions'),
-        where('ts', '>=', Timestamp.fromDate(since)),
-        orderBy('ts', 'desc'),
-        limit(2000)
-      );
-    } else {
-      q = query(collection(db, 'sessions'), orderBy('ts','desc'), limit(2000));
+      rawData = rawData.filter(d => {
+        if(!d.ts?.toDate) return false;
+        return d.ts.toDate() >= since;
+      });
     }
-    const snap = await getDocs(q);
-    allData = snap.docs.map(d => ({id: d.id, ...d.data()}));
+    allData = rawData;
     document.getElementById('last-refresh').textContent = 'Odświeżono: ' + new Date().toLocaleTimeString('pl');
     applyFilters();
   } catch(e) {
