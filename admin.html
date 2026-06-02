@@ -3,82 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Matma Admin Panel</title>
+<title>Matma Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Nunito',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh;padding:20px;}
-.header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:16px;border-bottom:2px solid #232338;}
-.header h1{font-family:'Righteous',cursive;font-size:1.6rem;background:linear-gradient(135deg,#ffd93d,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.ver-badge{background:#c94bff22;border:1px solid #c94bff;color:#c94bff;font-family:'Righteous',cursive;font-size:.78rem;padding:4px 12px;border-radius:99px;}
-.login-box{max-width:320px;margin:80px auto;background:#1a1a2e;border-radius:20px;padding:28px 22px;text-align:center;}
-.login-box h2{font-family:'Righteous',cursive;font-size:1.2rem;margin-bottom:18px;color:#ffd93d;}
-.login-box input{width:100%;padding:11px 13px;background:#232338;border:2px solid transparent;border-radius:12px;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.95rem;outline:none;margin-bottom:12px;}
+body{font-family:'Nunito',sans-serif;background:#0f0e17;color:#fffffe;min-height:100vh;padding:0;}
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.login-box{background:#1a1a2e;border-radius:20px;padding:32px 24px;width:100%;max-width:320px;text-align:center;}
+.login-ico{font-size:3rem;margin-bottom:12px;}
+.login-ttl{font-family:'Righteous',cursive;font-size:1.3rem;color:#ffd93d;margin-bottom:18px;}
+.login-box input{width:100%;padding:12px 14px;background:#232338;border:2px solid transparent;border-radius:12px;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.95rem;outline:none;margin-bottom:12px;}
 .login-box input:focus{border-color:#4d96ff;}
-.login-box button{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#4d96ff,#6bcb77);color:#0f0e17;font-family:'Righteous',cursive;font-size:1rem;cursor:pointer;}
-.login-error{color:#ff6b6b;font-size:.8rem;margin-top:8px;display:none;}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
-.stat-card{background:#1a1a2e;border-radius:16px;padding:16px 14px;border:1px solid #232338;}
-.stat-val{font-family:'Righteous',cursive;font-size:2rem;margin-bottom:4px;}
-.stat-lbl{font-size:.72rem;color:#a7a9be;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
-.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-bottom:28px;}
-.chart-card{background:#1a1a2e;border-radius:16px;padding:18px;border:1px solid #232338;}
-.chart-card h3{font-family:'Righteous',cursive;font-size:1rem;margin-bottom:14px;color:#ffd93d;}
-.table-card{background:#1a1a2e;border-radius:16px;padding:18px;border:1px solid #232338;margin-bottom:18px;overflow-x:auto;}
-.table-card h3{font-family:'Righteous',cursive;font-size:1rem;margin-bottom:14px;color:#ffd93d;}
-table{width:100%;border-collapse:collapse;font-size:.82rem;}
-th{text-align:left;padding:8px 10px;color:#a7a9be;font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid #232338;}
-td{padding:9px 10px;border-bottom:1px solid #23233866;}
+.login-btn{width:100%;padding:12px;border:none;border-radius:12px;background:linear-gradient(135deg,#4d96ff,#6bcb77);color:#0f0e17;font-family:'Righteous',cursive;font-size:1rem;cursor:pointer;}
+.login-err{color:#ff6b6b;font-size:.82rem;margin-top:8px;display:none;}
+/* MAIN */
+.main{display:none;padding:18px;max-width:1100px;margin:0 auto;}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid #232338;flex-wrap:wrap;}
+.header h1{font-family:'Righteous',cursive;font-size:1.5rem;background:linear-gradient(135deg,#ffd93d,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ver{background:#c94bff22;border:1px solid #c94bff;color:#c94bff;font-family:'Righteous',cursive;font-size:.75rem;padding:3px 10px;border-radius:99px;}
+.hdr-right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.refresh-btn{padding:8px 14px;border:none;border-radius:10px;background:#4d96ff;color:#fff;font-family:'Righteous',cursive;font-size:.8rem;cursor:pointer;}
+.refresh-btn:active{opacity:.8;}
+.last-refresh{font-size:.72rem;color:#a7a9be;}
+/* FILTERS */
+.filters{display:flex;gap:9px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
+.filters select{background:#1a1a2e;border:1px solid #3a3a5e;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.83rem;padding:8px 11px;border-radius:10px;outline:none;cursor:pointer;}
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.kpi{background:#1a1a2e;border-radius:16px;padding:15px 13px;border:1px solid #232338;}
+.kpi-val{font-family:'Righteous',cursive;font-size:1.9rem;margin-bottom:3px;}
+.kpi-lbl{font-size:.68rem;color:#a7a9be;font-weight:800;text-transform:uppercase;letter-spacing:.08em;}
+/* CHARTS */
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:22px;}
+.chart-card{background:#1a1a2e;border-radius:16px;padding:16px;border:1px solid #232338;}
+.chart-card h3{font-family:'Righteous',cursive;font-size:.95rem;margin-bottom:12px;color:#ffd93d;}
+/* TABLE */
+.tcard{background:#1a1a2e;border-radius:16px;padding:16px;border:1px solid #232338;margin-bottom:16px;overflow-x:auto;}
+.tcard h3{font-family:'Righteous',cursive;font-size:.95rem;margin-bottom:12px;color:#ffd93d;}
+table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:580px;}
+th{text-align:left;padding:8px 9px;color:#a7a9be;font-weight:800;font-size:.67rem;text-transform:uppercase;letter-spacing:.07em;border-bottom:1px solid #232338;}
+td{padding:8px 9px;border-bottom:1px solid #23233855;}
 tr:hover td{background:#23233840;}
 .pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:.68rem;font-weight:800;}
-.pill-easy{background:#6bcb7720;color:#6bcb77;}
-.pill-medium{background:#ffd93d20;color:#ffd93d;}
-.pill-hard{background:#ff6b6b20;color:#ff6b6b;}
-.pill-legend{background:#c94bff20;color:#c94bff;}
-.filter-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center;}
-.filter-row select,.filter-row input{background:#232338;border:1px solid #3a3a5e;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.85rem;padding:8px 12px;border-radius:10px;outline:none;}
-.refresh-btn{padding:8px 16px;border:none;border-radius:10px;background:#4d96ff;color:#fff;font-family:'Righteous',cursive;font-size:.82rem;cursor:pointer;}
-.refresh-btn:active{opacity:.8;}
-.loading{text-align:center;padding:40px;color:#a7a9be;font-weight:700;}
-.section-title{font-family:'Righteous',cursive;font-size:1.1rem;color:#a7a9be;margin-bottom:14px;margin-top:8px;}
-#main-content{display:none;}
+.p-easy{background:#6bcb7720;color:#6bcb77;}
+.p-medium{background:#ffd93d20;color:#ffd93d;}
+.p-hard{background:#ff6b6b20;color:#ff6b6b;}
+.p-legend{background:#c94bff20;color:#c94bff;}
+/* EMPTY / ERROR */
+.empty{text-align:center;padding:32px;color:#a7a9be;font-weight:700;}
+.setup-box{background:#1a1a2e;border:2px solid #ffd93d;border-radius:16px;padding:20px;margin-bottom:20px;}
+.setup-box h3{font-family:'Righteous',cursive;color:#ffd93d;margin-bottom:10px;}
+.setup-box p{font-size:.85rem;color:#a7a9be;line-height:1.6;margin-bottom:8px;}
+.setup-box code{background:#232338;padding:3px 7px;border-radius:6px;font-family:monospace;font-size:.82rem;color:#6bcb77;word-break:break-all;}
+.setup-box input{width:100%;padding:10px 12px;background:#232338;border:2px solid #3a3a5e;border-radius:10px;color:#fffffe;font-family:'Nunito',sans-serif;font-size:.88rem;outline:none;margin:8px 0;}
+.setup-box input:focus{border-color:#4d96ff;}
+.setup-btn{padding:10px 18px;border:none;border-radius:10px;background:linear-gradient(135deg,#4d96ff,#6bcb77);color:#0f0e17;font-family:'Righteous',cursive;font-size:.88rem;cursor:pointer;}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="login-section">
+<div class="login-wrap" id="login-wrap">
   <div class="login-box">
-    <div style="font-size:2.5rem;margin-bottom:12px;">🧮</div>
-    <h2>Matma Admin Panel</h2>
-    <input type="password" id="admin-pass" placeholder="Hasło admina" onkeydown="if(event.key==='Enter')doLogin()">
-    <button onclick="doLogin()">Zaloguj się</button>
-    <div class="login-error" id="login-err">Złe hasło</div>
+    <div class="login-ico">🧮</div>
+    <div class="login-ttl">Matma Admin Panel</div>
+    <input type="password" id="pass" placeholder="Hasło admina" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Zaloguj się</button>
+    <div class="login-err" id="login-err">Złe hasło</div>
   </div>
 </div>
 
-<!-- MAIN PANEL -->
-<div id="main-content">
+<!-- MAIN -->
+<div class="main" id="main">
   <div class="header">
     <div>
       <h1>🧮 Matma Admin</h1>
-      <div style="font-size:.75rem;color:#a7a9be;margin-top:2px;">matmaapp-71a51 · Firebase Firestore</div>
+      <div style="font-size:.72rem;color:#a7a9be;margin-top:2px">Google Sheets · v6</div>
     </div>
-    <span class="ver-badge">v6</span>
-    <div style="margin-left:auto;display:flex;gap:10px;align-items:center;">
-      <span style="font-size:.75rem;color:#a7a9be;" id="last-refresh"></span>
+    <span class="ver">v6</span>
+    <div class="hdr-right">
+      <span class="last-refresh" id="last-refresh"></span>
       <button class="refresh-btn" onclick="loadData()">🔄 Odśwież</button>
     </div>
   </div>
 
+  <!-- SETUP BOX — shown if webhook not configured -->
+  <div class="setup-box" id="setup-box" style="display:none">
+    <h3>⚙️ Skonfiguruj webhook</h3>
+    <p>Wklej URL swojego Google Apps Script webhooka poniżej. Zostanie zapisany w przeglądarce.</p>
+    <input type="text" id="webhook-input" placeholder="https://script.google.com/macros/s/...">
+    <button class="setup-btn" onclick="saveWebhook()">Zapisz URL</button>
+  </div>
+
   <!-- FILTERS -->
-  <div class="filter-row">
+  <div class="filters">
     <select id="f-days" onchange="loadData()">
-      <option value="7">Ostatnie 7 dni</option>
-      <option value="30" selected>Ostatnie 30 dni</option>
-      <option value="90">Ostatnie 90 dni</option>
-      <option value="0">Wszystkie dane</option>
+      <option value="7">7 dni</option>
+      <option value="30" selected>30 dni</option>
+      <option value="90">90 dni</option>
+      <option value="0">Wszystkie</option>
     </select>
     <select id="f-cat" onchange="applyFilters()">
       <option value="">Wszystkie kategorie</option>
@@ -100,216 +125,208 @@ tr:hover td{background:#23233840;}
     </select>
   </div>
 
-  <!-- KPI CARDS -->
-  <div class="stats-grid" id="kpi-grid">
-    <div class="stat-card"><div class="stat-val" id="kpi-sessions" style="color:#4d96ff">—</div><div class="stat-lbl">Sesji ogółem</div></div>
-    <div class="stat-card"><div class="stat-val" id="kpi-avg-pct" style="color:#6bcb77">—</div><div class="stat-lbl">Średni wynik</div></div>
-    <div class="stat-card"><div class="stat-val" id="kpi-perfect" style="color:#ffd93d">—</div><div class="stat-lbl">Perfekcyjnych sesji</div></div>
-    <div class="stat-card"><div class="stat-val" id="kpi-boss" style="color:#ff6b6b">—</div><div class="stat-lbl">Wygranych boss fight</div></div>
-    <div class="stat-card"><div class="stat-val" id="kpi-today" style="color:#c94bff">—</div><div class="stat-lbl">Sesji dziś</div></div>
-    <div class="stat-card"><div class="stat-val" id="kpi-xp" style="color:#ffd93d">—</div><div class="stat-lbl">XP rozdane łącznie</div></div>
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val" id="k-sessions" style="color:#4d96ff">—</div><div class="kpi-lbl">Sesji łącznie</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-avg" style="color:#6bcb77">—</div><div class="kpi-lbl">Średni wynik</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-perfect" style="color:#ffd93d">—</div><div class="kpi-lbl">Perfekcyjnych</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-boss" style="color:#ff6b6b">—</div><div class="kpi-lbl">Boss Fights</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-today" style="color:#c94bff">—</div><div class="kpi-lbl">Sesji dziś</div></div>
+    <div class="kpi"><div class="kpi-val" id="k-xp" style="color:#ffd93d">—</div><div class="kpi-lbl">XP łącznie</div></div>
   </div>
 
   <!-- CHARTS -->
-  <div class="charts-grid">
-    <div class="chart-card">
-      <h3>📊 Sesje dziennie</h3>
-      <canvas id="chart-daily" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>📚 Popularne kategorie</h3>
-      <canvas id="chart-cats" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>🏫 Klasy</h3>
-      <canvas id="chart-grades" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>⚡ Poziomy trudności</h3>
-      <canvas id="chart-diff" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>📈 Średni wynik % per kategoria</h3>
-      <canvas id="chart-scores" height="200"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>🎮 Tryby gry</h3>
-      <canvas id="chart-modes" height="200"></canvas>
-    </div>
+  <div class="charts">
+    <div class="chart-card"><h3>📊 Sesje dziennie</h3><canvas id="c-daily"></canvas></div>
+    <div class="chart-card"><h3>📚 Kategorie</h3><canvas id="c-cats"></canvas></div>
+    <div class="chart-card"><h3>🏫 Klasy</h3><canvas id="c-grades"></canvas></div>
+    <div class="chart-card"><h3>⚡ Poziomy trudności</h3><canvas id="c-diff"></canvas></div>
+    <div class="chart-card"><h3>📈 Wynik % per kategoria</h3><canvas id="c-scores"></canvas></div>
+    <div class="chart-card"><h3>🎮 Tryby gry</h3><canvas id="c-modes"></canvas></div>
   </div>
 
-  <!-- RECENT SESSIONS TABLE -->
-  <div class="table-card">
+  <!-- TABLE -->
+  <div class="tcard">
     <h3>🕐 Ostatnie sesje</h3>
     <table>
-      <thead><tr><th>Czas</th><th>Kategoria</th><th>Klasa</th><th>Poziom</th><th>Wynik</th><th>Karty</th><th>XP</th><th>Tryb</th></tr></thead>
-      <tbody id="sessions-table"></tbody>
+      <thead><tr><th>Czas</th><th>Kategoria</th><th>Klasa</th><th>Poziom</th><th>Wynik</th><th>Karty</th><th>XP</th><th>Tryb</th><th>Boss</th></tr></thead>
+      <tbody id="tbl"></tbody>
     </table>
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyDp7kFSOJp2f3pgisGEdHAvhGdIGoKBmsk",
-  authDomain: "matmaapp-71a51.firebaseapp.com",
-  projectId: "matmaapp-71a51",
-  storageBucket: "matmaapp-71a51.firebasestorage.app",
-  messagingSenderId: "71014681518",
-  appId: "1:71014681518:web:c6031a9725611bd705163f",
-  measurementId: "G-4PM5VXJ9JX"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// ── SIMPLE PASSWORD ──
-// Change this to your own password!
+/* ══ CONFIG ══ */
 const ADMIN_PASS = 'matma2024admin';
-
-window.doLogin = function() {
-  const pass = document.getElementById('admin-pass').value;
-  if(pass === ADMIN_PASS) {
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
-    loadData();
-  } else {
-    document.getElementById('login-err').style.display = 'block';
-  }
-};
-
-// ── DATA ──
-let allData = [];
-let charts = {};
-
+const WEBHOOK_KEY = 'matma_admin_webhook';
 const CAT_NAMES = {mult:'Mnożenie',div:'Dzielenie',addsub:'Dodaw./Odjm.',brackets:'Nawiasy',fractions:'Ułamki',geometry:'Geometria',powers:'Potęgi'};
 const GRADE_NAMES = {k1:'Klasa 1',k2:'Klasa 2',k3:'Klasa 3',k4:'Klasa 4',k5:'Klasa 5'};
 const DIFF_NAMES = {easy:'Łatwy',medium:'Średni',hard:'Trudny',legend:'Legenda'};
 const MODE_NAMES = {quiz:'Quiz',flip:'Fiszki','2p':'2 graczy',kbd:'Klawiatura'};
 const COLORS = ['#4d96ff','#6bcb77','#ffd93d','#ff6b6b','#c94bff','#ff9f43','#a7a9be'];
+const DIFF_COLORS = {easy:'#6bcb77',medium:'#ffd93d',hard:'#ff6b6b',legend:'#c94bff'};
 
-window.loadData = async function() {
-  document.getElementById('kpi-sessions').textContent = '...';
-  const days = parseInt(document.getElementById('f-days').value);
-  try {
-    let q;
-    // Simple query — no composite index needed
-    // Date filtering done client-side
-    q = db.collection('sessions').orderBy('ts', 'desc').limit(2000);
-    const snap = await q.get();
-    let rawData = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    // Client-side date filter
-    const days = parseInt(document.getElementById('f-days').value);
-    if(days > 0) {
-      const since = new Date();
-      since.setDate(since.getDate() - days);
-      rawData = rawData.filter(d => {
-        if(!d.ts?.toDate) return false;
-        return d.ts.toDate() >= since;
-      });
-    }
-    allData = rawData;
-    document.getElementById('last-refresh').textContent = 'Odświeżono: ' + new Date().toLocaleTimeString('pl');
-    applyFilters();
-  } catch(e) {
-    console.error(e);
-    document.getElementById('kpi-sessions').textContent = 'Błąd';
-    alert('Błąd pobierania danych: ' + e.message + '\n\nSprawdź reguły Firestore w Firebase Console.\nUstaw: allow read, write: if true; (na czas testów)');
-  }
-};
+let statsData = null, rawData = [], charts = {};
 
-window.applyFilters = function() {
-  const cat = document.getElementById('f-cat').value;
-  const grade = document.getElementById('f-grade').value;
-  let data = allData;
-  if(cat) data = data.filter(d => d.category === cat);
-  if(grade) data = data.filter(d => d.grade === grade);
-  renderDashboard(data);
-};
-
-function renderDashboard(data) {
-  const n = data.length;
-  const today = new Date().toDateString();
-
-  // KPIs
-  document.getElementById('kpi-sessions').textContent = n;
-  document.getElementById('kpi-avg-pct').textContent = n ? Math.round(data.reduce((s,d)=>s+(d.pct||0),0)/n) + '%' : '—';
-  document.getElementById('kpi-perfect').textContent = data.filter(d=>d.pct===100).length;
-  document.getElementById('kpi-boss').textContent = data.filter(d=>d.bossMode).length;
-  document.getElementById('kpi-today').textContent = data.filter(d=>d.ts&&d.ts.toDate&&d.ts.toDate().toDateString()===today).length;
-  document.getElementById('kpi-xp').textContent = data.reduce((s,d)=>s+(d.xpEarned||0),0).toLocaleString();
-
-  // Daily sessions chart
-  const daily = {};
-  data.forEach(d => {
-    if(!d.ts?.toDate) return;
-    const day = d.ts.toDate().toLocaleDateString('pl',{day:'2-digit',month:'2-digit'});
-    daily[day] = (daily[day]||0) + 1;
-  });
-  const sortedDays = Object.keys(daily).sort((a,b)=>{
-    const [da,ma]=a.split('.').map(Number);
-    const [db,mb]=b.split('.').map(Number);
-    return (ma*100+da)-(mb*100+db);
-  });
-  makeChart('chart-daily','line',sortedDays,
-    [{label:'Sesje',data:sortedDays.map(k=>daily[k]),borderColor:'#4d96ff',backgroundColor:'#4d96ff22',tension:.3,fill:true}]
-  );
-
-  // Categories
-  const cats = countBy(data,'category');
-  makeChart('chart-cats','doughnut',Object.keys(cats).map(k=>CAT_NAMES[k]||k),
-    [{data:Object.values(cats),backgroundColor:COLORS}]
-  );
-
-  // Grades
-  const grades = countBy(data,'grade');
-  makeChart('chart-grades','bar',Object.keys(grades).map(k=>GRADE_NAMES[k]||k),
-    [{label:'Sesje',data:Object.values(grades),backgroundColor:'#6bcb77'}],{indexAxis:'y'}
-  );
-
-  // Difficulties
-  const diffs = countBy(data,'difficulty');
-  const diffOrder = ['easy','medium','hard','legend'];
-  makeChart('chart-diff','bar',diffOrder.map(k=>DIFF_NAMES[k]),
-    [{label:'Sesje',data:diffOrder.map(k=>diffs[k]||0),backgroundColor:['#6bcb77','#ffd93d','#ff6b6b','#c94bff']}]
-  );
-
-  // Avg score per category
-  const catScores = {};
-  const catCounts = {};
-  data.forEach(d=>{if(!d.category)return;catScores[d.category]=(catScores[d.category]||0)+(d.pct||0);catCounts[d.category]=(catCounts[d.category]||0)+1;});
-  const catKeys = Object.keys(catScores);
-  makeChart('chart-scores','bar',catKeys.map(k=>CAT_NAMES[k]||k),
-    [{label:'Śr. wynik %',data:catKeys.map(k=>Math.round(catScores[k]/catCounts[k])),backgroundColor:'#4d96ff'}]
-  );
-
-  // Modes
-  const modes = countBy(data,'mode');
-  makeChart('chart-modes','doughnut',Object.keys(modes).map(k=>MODE_NAMES[k]||k),
-    [{data:Object.values(modes),backgroundColor:COLORS}]
-  );
-
-  // Recent sessions table
-  const tbody = document.getElementById('sessions-table');
-  tbody.innerHTML = '';
-  data.slice(0,50).forEach(d => {
-    const tr = document.createElement('tr');
-    const time = d.ts?.toDate ? d.ts.toDate().toLocaleString('pl',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : '—';
-    const diffPill = `<span class="pill pill-${d.difficulty||''}">${DIFF_NAMES[d.difficulty]||d.difficulty||'—'}</span>`;
-    const pctColor = (d.pct||0)>=80?'#6bcb77':(d.pct||0)>=60?'#ffd93d':'#ff6b6b';
-    tr.innerHTML = `<td style="color:#a7a9be;font-size:.75rem">${time}</td><td>${CAT_NAMES[d.category]||d.category||'—'}</td><td>${GRADE_NAMES[d.grade]||d.grade||'—'}</td><td>${diffPill}</td><td style="color:${pctColor};font-weight:800">${d.pct||0}%</td><td>${d.score||0}/${d.total||0}</td><td style="color:#c94bff">+${d.xpEarned||0}</td><td style="color:#a7a9be">${MODE_NAMES[d.mode]||d.mode||'quiz'}</td>`;
-    tbody.appendChild(tr);
-  });
-  if(n===0){const tr=document.createElement('tr');tr.innerHTML='<td colspan="8" style="text-align:center;padding:24px;color:#a7a9be">Brak danych w tym zakresie. Zagraj kilka sesji w aplikacji!</td>';tbody.appendChild(tr);}
+/* ══ WEBHOOK URL ══ */
+function getWebhook() {
+  return localStorage.getItem(WEBHOOK_KEY) ||
+    'https://script.google.com/macros/s/AKfycbxzmY0BtEIntdxy8cZENU4MHZ8O-U79n5RJkKVBCLRkuw8hHOU69F2SJ0e2-AH2RaZr/exec';
+}
+function saveWebhook() {
+  const url = document.getElementById('webhook-input').value.trim();
+  if (!url) return;
+  localStorage.setItem(WEBHOOK_KEY, url);
+  document.getElementById('setup-box').style.display = 'none';
+  loadData();
 }
 
-function countBy(data, key){const out={};data.forEach(d=>{if(d[key])out[d[key]]=(out[d[key]]||0)+1;});return out;}
+/* ══ LOGIN ══ */
+function doLogin() {
+  const pass = document.getElementById('pass').value;
+  if (pass === ADMIN_PASS) {
+    document.getElementById('login-wrap').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('login-err').style.display = 'block';
+  }
+}
+document.getElementById('pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+/* ══ LOAD DATA ══ */
+async function loadData() {
+  const days = document.getElementById('f-days').value;
+  const webhook = getWebhook();
+  if (!webhook) { document.getElementById('setup-box').style.display = 'block'; return; }
+
+  setKPI('—','—','—','—','—','—');
+
+  try {
+    // Load stats (aggregated)
+    const statsUrl = webhook + '?action=stats&days=' + days;
+    const statsResp = await fetch(statsUrl);
+    statsData = await statsResp.json();
+
+    // Load raw rows
+    const rawUrl = webhook + '?action=raw&limit=100';
+    const rawResp = await fetch(rawUrl);
+    const rawJson = await rawResp.json();
+    rawData = rawJson.rows || [];
+
+    document.getElementById('last-refresh').textContent = 'Odświeżono: ' + new Date().toLocaleTimeString('pl');
+    applyFilters();
+
+  } catch(e) {
+    console.error(e);
+    setKPI('Błąd','','','','','');
+    alert('Błąd pobierania danych: ' + e.message + '\n\nSprawdź czy webhook jest poprawnie wdrożony i ma nową wersję (v3).');
+  }
+}
+
+/* ══ APPLY FILTERS (client-side) ══ */
+function applyFilters() {
+  if (!statsData) return;
+  const cat = document.getElementById('f-cat').value;
+  const grade = document.getElementById('f-grade').value;
+
+  // Filter raw data
+  let rows = rawData;
+  if (cat)   rows = rows.filter(r => r.cat === cat);
+  if (grade) rows = rows.filter(r => r.grade === grade);
+
+  // Recompute KPIs from raw if filtered, else use pre-aggregated stats
+  if (cat || grade) {
+    renderFromRaw(rows);
+  } else {
+    renderFromStats(statsData, rows);
+  }
+}
+
+function renderFromStats(s, rows) {
+  setKPI(s.sessions, s.avgPct+'%', s.perfect, s.boss, s.today, s.totalXP.toLocaleString());
+  buildCharts(s.byDay, s.byCat, s.byGrade, s.byDiff, s.avgByCat, s.byMode);
+  buildTable(rows);
+}
+
+function renderFromRaw(rows) {
+  if (!rows.length) {
+    setKPI(0,'—',0,0,0,0);
+    buildTable([]);
+    return;
+  }
+  const today = new Date().toLocaleDateString('pl');
+  const totalPct = rows.reduce((s,r) => s + (parseFloat(r.pct)||0), 0);
+  const totalXP  = rows.reduce((s,r) => s + (parseFloat(r.xp)||0),  0);
+  const perfect  = rows.filter(r => parseFloat(r.pct) === 100).length;
+  const boss     = rows.filter(r => r.boss === 'tak').length;
+  const todayN   = rows.filter(r => String(r.ts).startsWith(today)).length;
+
+  setKPI(rows.length, Math.round(totalPct/rows.length)+'%', perfect, boss, todayN, totalXP.toLocaleString());
+
+  // Recompute breakdowns
+  const byCat={},byDiff={},byGrade={},byMode={},byDay={},catScores={},catCounts={};
+  rows.forEach(r => {
+    byCat[r.cat]    = (byCat[r.cat]||0)+1;
+    byDiff[r.diff]  = (byDiff[r.diff]||0)+1;
+    byGrade[r.grade]= (byGrade[r.grade]||0)+1;
+    byMode[r.mode]  = (byMode[r.mode]||0)+1;
+    const day = String(r.ts).split(',')[0];
+    byDay[day]=(byDay[day]||0)+1;
+    catScores[r.cat]=(catScores[r.cat]||0)+(parseFloat(r.pct)||0);
+    catCounts[r.cat]=(catCounts[r.cat]||0)+1;
+  });
+  const avgByCat={};
+  Object.keys(catScores).forEach(k => avgByCat[k]=Math.round(catScores[k]/catCounts[k]));
+  buildCharts(byDay,byCat,byGrade,byDiff,avgByCat,byMode);
+  buildTable(rows);
+}
+
+function setKPI(sessions,avg,perfect,boss,today,xp) {
+  document.getElementById('k-sessions').textContent = sessions;
+  document.getElementById('k-avg').textContent      = avg;
+  document.getElementById('k-perfect').textContent  = perfect;
+  document.getElementById('k-boss').textContent     = boss;
+  document.getElementById('k-today').textContent    = today;
+  document.getElementById('k-xp').textContent       = xp;
+}
+
+/* ══ CHARTS ══ */
+function buildCharts(byDay, byCat, byGrade, byDiff, avgByCat, byMode) {
+  // Sort days
+  const sortedDays = Object.keys(byDay).sort((a,b) => {
+    const pa=a.split('.').reverse().join('-'), pb=b.split('.').reverse().join('-');
+    return pa>pb?1:-1;
+  });
+
+  makeChart('c-daily','line', sortedDays,
+    [{label:'Sesje',data:sortedDays.map(k=>byDay[k]),borderColor:'#4d96ff',backgroundColor:'#4d96ff22',tension:.35,fill:true,pointRadius:3}]);
+
+  const catKeys = Object.keys(byCat);
+  makeChart('c-cats','doughnut', catKeys.map(k=>CAT_NAMES[k]||k),
+    [{data:catKeys.map(k=>byCat[k]),backgroundColor:COLORS}]);
+
+  const gradeKeys = ['k1','k2','k3','k4','k5'].filter(k=>byGrade[k]);
+  makeChart('c-grades','bar', gradeKeys.map(k=>GRADE_NAMES[k]),
+    [{label:'Sesje',data:gradeKeys.map(k=>byGrade[k]||0),backgroundColor:'#6bcb77',borderRadius:6}],{indexAxis:'y'});
+
+  const diffKeys = ['easy','medium','hard','legend'];
+  makeChart('c-diff','bar', diffKeys.map(k=>DIFF_NAMES[k]),
+    [{label:'Sesje',data:diffKeys.map(k=>byDiff[k]||0),backgroundColor:diffKeys.map(k=>DIFF_COLORS[k]),borderRadius:6}]);
+
+  const scoreKeys = Object.keys(avgByCat);
+  makeChart('c-scores','bar', scoreKeys.map(k=>CAT_NAMES[k]||k),
+    [{label:'Śr. wynik %',data:scoreKeys.map(k=>avgByCat[k]),backgroundColor:'#4d96ff',borderRadius:6}]);
+
+  const modeKeys = Object.keys(byMode);
+  makeChart('c-modes','doughnut', modeKeys.map(k=>MODE_NAMES[k]||k),
+    [{data:modeKeys.map(k=>byMode[k]),backgroundColor:COLORS}]);
+}
 
 function makeChart(id, type, labels, datasets, extra={}) {
   const canvas = document.getElementById(id);
-  if(!canvas) return;
-  if(charts[id]) { charts[id].destroy(); }
+  if (!canvas) return;
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
   const isDoughnut = type === 'doughnut';
   charts[id] = new Chart(canvas, {
     type,
@@ -317,14 +334,43 @@ function makeChart(id, type, labels, datasets, extra={}) {
     options: {
       responsive: true,
       plugins: {
-        legend: { display: isDoughnut, labels: { color: '#a7a9be', font: { family: 'Nunito', weight: '700' }, boxWidth: 12 } },
+        legend: {
+          display: isDoughnut,
+          labels: { color:'#a7a9be', font:{family:'Nunito',weight:'700'}, boxWidth:12, padding:12 }
+        },
       },
       scales: isDoughnut ? {} : {
-        x: { ticks: { color: '#a7a9be', font: { family: 'Nunito', size: 11 } }, grid: { color: '#23233860' } },
-        y: { ticks: { color: '#a7a9be', font: { family: 'Nunito', size: 11 } }, grid: { color: '#23233860' } },
+        x: { ticks:{color:'#a7a9be',font:{family:'Nunito',size:11}}, grid:{color:'#23233855'} },
+        y: { ticks:{color:'#a7a9be',font:{family:'Nunito',size:11}}, grid:{color:'#23233855'}, beginAtZero:true },
       },
       ...extra,
     }
+  });
+}
+
+/* ══ TABLE ══ */
+function buildTable(rows) {
+  const tbody = document.getElementById('tbl');
+  tbody.innerHTML = '';
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">Brak danych. Zagraj kilka sesji!</td></tr>';
+    return;
+  }
+  rows.slice(0, 50).forEach(r => {
+    const pctN = parseFloat(r.pct) || 0;
+    const pctColor = pctN >= 80 ? '#6bcb77' : pctN >= 60 ? '#ffd93d' : '#ff6b6b';
+    const tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td style="color:#a7a9be;font-size:.75rem;white-space:nowrap">' + (r.ts||'—') + '</td>' +
+      '<td>' + (CAT_NAMES[r.cat]||r.cat||'—') + '</td>' +
+      '<td>' + (GRADE_NAMES[r.grade]||r.grade||'—') + '</td>' +
+      '<td><span class="pill p-' + (r.diff||'') + '">' + (DIFF_NAMES[r.diff]||r.diff||'—') + '</span></td>' +
+      '<td style="color:' + pctColor + ';font-weight:800">' + pctN + '%</td>' +
+      '<td>' + (r.score||0) + '/' + (r.total||0) + '</td>' +
+      '<td style="color:#c94bff">+' + (r.xp||0) + '</td>' +
+      '<td style="color:#a7a9be">' + (MODE_NAMES[r.mode]||r.mode||'quiz') + '</td>' +
+      '<td>' + (r.boss==='tak'?'🐉':'—') + '</td>';
+    tbody.appendChild(tr);
   });
 }
 </script>
