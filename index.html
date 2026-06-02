@@ -396,27 +396,21 @@ body.fs-large{font-size:1.1rem;}
         try { window._analytics.logEvent(name, params); } catch(e) {}
       };
       window._logSession = async function(data) {
-        // Use Google Analytics custom events (no rules/permissions needed)
+        const WEBHOOK = 'https://script.google.com/macros/s/AKfycbxzmY0BtEIntdxy8cZENU4MHZ8O-U79n5RJkKVBCLRkuw8hHOU69F2SJ0e2-AH2RaZr/exec';
         try {
-          if(window._analytics) {
-            // Main session event with all key params
-            window._analytics.logEvent('session_complete', {
-              category:    data.category    || '',
-              difficulty:  data.difficulty  || '',
-              grade:       data.grade       || '',
-              mode:        data.mode        || '',
-              score_pct:   data.pct         || 0,
-              score:       data.score       || 0,
-              total_cards: data.total       || 0,
-              xp_earned:   data.xpEarned    || 0,
-              timer_used:  data.timer       ? 1 : 0,
-              boss_mode:   data.bossMode    ? 1 : 0,
-              app_version: data.appVersion  || 'v6',
-            });
-            console.log('Session tracked via Analytics ✓');
+          const resp = await fetch(WEBHOOK, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+          });
+          const result = await resp.json();
+          if(result.status === 'ok') {
+            console.log('Session saved to Sheets ✓');
+          } else {
+            console.warn('Sheets webhook error:', result.message);
           }
         } catch(e) {
-          console.warn('Analytics logEvent failed:', e.message);
+          console.warn('Sheets fetch failed:', e.message);
         }
       };
       console.log('Firebase compat initialized ✓');
