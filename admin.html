@@ -171,7 +171,7 @@ let statsData = null, rawData = [], charts = {};
 /* ══ WEBHOOK URL ══ */
 function getWebhook() {
   return localStorage.getItem(WEBHOOK_KEY) ||
-    'https://script.google.com/macros/s/AKfycbxzmY0BtEIntdxy8cZENU4MHZ8O-U79n5RJkKVBCLRkuw8hHOU69F2SJ0e2-AH2RaZr/exec';
+    'https://script.google.com/macros/s/AKfycbwU-1NErGGmwmmO477b8LKznADnnxDkOidMEhT57LHekooWkvcg_-APZjiBtGoTkiEJ/exec';
 }
 function saveWebhook() {
   const url = document.getElementById('webhook-input').value.trim();
@@ -203,16 +203,25 @@ async function loadData() {
   setKPI('—','—','—','—','—','—');
 
   try {
-    // Load stats (aggregated)
+    // Try v3 webhook first (has ?action=stats)
     const statsUrl = webhook + '?action=stats&days=' + days;
     const statsResp = await fetch(statsUrl);
-    statsData = await statsResp.json();
+    const statsJson = await statsResp.json();
 
-    // Load raw rows
-    const rawUrl = webhook + '?action=raw&limit=100';
-    const rawResp = await fetch(rawUrl);
-    const rawJson = await rawResp.json();
-    rawData = rawJson.rows || [];
+    if (statsJson.status === 'ok' && typeof statsJson.sessions !== 'undefined') {
+      // V3 webhook — full stats available
+      statsData = statsJson;
+      const rawUrl = webhook + '?action=raw&limit=100';
+      const rawResp = await fetch(rawUrl);
+      const rawJson = await rawResp.json();
+      rawData = rawJson.rows || [];
+    } else {
+      // Old webhook or health check response — no stats yet
+      // Show empty state with message
+      statsData = {sessions:0,avgPct:0,perfect:0,boss:0,today:0,totalXP:0,byCat:{},byDiff:{},byGrade:{},byMode:{},byDay:{},avgByCat:{}};
+      rawData = [];
+      document.getElementById('last-refresh').textContent = '⚠️ Zaktualizuj webhook do v3 (matma-webhook.gs)';
+    }
 
     document.getElementById('last-refresh').textContent = 'Odświeżono: ' + new Date().toLocaleTimeString('pl');
     applyFilters();
@@ -220,7 +229,7 @@ async function loadData() {
   } catch(e) {
     console.error(e);
     setKPI('Błąd','','','','','');
-    alert('Błąd pobierania danych: ' + e.message + '\n\nSprawdź czy webhook jest poprawnie wdrożony i ma nową wersję (v3).');
+    alert('Błąd: ' + e.message);
   }
 }
 
@@ -244,9 +253,16 @@ function applyFilters() {
 }
 
 function renderFromStats(s, rows) {
-  setKPI(s.sessions, s.avgPct+'%', s.perfect, s.boss, s.today, s.totalXP.toLocaleString());
-  buildCharts(s.byDay, s.byCat, s.byGrade, s.byDiff, s.avgByCat, s.byMode);
-  buildTable(rows);
+  setKPI(
+    s.sessions || 0,
+    (s.avgPct || 0) + '%',
+    s.perfect || 0,
+    s.boss || 0,
+    s.today || 0,
+    (s.totalXP || 0).toLocaleString()
+  );
+  buildCharts(s.byDay||{}, s.byCat||{}, s.byGrade||{}, s.byDiff||{}, s.avgByCat||{}, s.byMode||{});
+  buildTable(rows || []);
 }
 
 function renderFromRaw(rows) {

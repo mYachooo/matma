@@ -396,7 +396,7 @@ body.fs-large{font-size:1.1rem;}
         try { window._analytics.logEvent(name, params); } catch(e) {}
       };
       window._logSession = async function(data) {
-        const WEBHOOK = 'https://script.google.com/macros/s/AKfycbxzmY0BtEIntdxy8cZENU4MHZ8O-U79n5RJkKVBCLRkuw8hHOU69F2SJ0e2-AH2RaZr/exec';
+        const WEBHOOK = 'https://script.google.com/macros/s/AKfycbwU-1NErGGmwmmO477b8LKznADnnxDkOidMEhT57LHekooWkvcg_-APZjiBtGoTkiEJ/exec';
         try {
           // Use no-cors GET — works around CORS restriction
           const url = WEBHOOK + '?data=' + encodeURIComponent(JSON.stringify(data));
