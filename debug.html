@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><title>Matma Debug</title>
+<style>
+body{font-family:monospace;background:#111;color:#eee;padding:20px;font-size:14px;}
+.ok{color:#6bcb77;} .err{color:#ff6b6b;} .info{color:#ffd93d;}
+pre{background:#1a1a2e;padding:12px;border-radius:8px;margin:8px 0;white-space:pre-wrap;word-break:break-all;}
+button{background:#4d96ff;color:#fff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:14px;margin:4px;}
+</style>
+</head>
+<body>
+<h2>🔧 Matma Webhook Debug</h2>
+<button onclick="runAll()">▶ Uruchom wszystkie testy</button>
+<button onclick="clearLog()">🗑 Wyczyść</button>
+<div id="log"></div>
+
+<script>
+const WEBHOOK = 'https://script.google.com/macros/s/AKfycbxzmY0BtEIntdxy8cZENU4MHZ8O-U79n5RJkKVBCLRkuw8hHOU69F2SJ0e2-AH2RaZr/exec';
+
+function log(msg, cls) {
+  const d = document.getElementById('log');
+  d.innerHTML += '<div class="'+(cls||'')+'">'+msg+'</div>';
+}
+function logpre(obj) {
+  document.getElementById('log').innerHTML += '<pre>'+JSON.stringify(obj,null,2)+'</pre>';
+}
+function clearLog() { document.getElementById('log').innerHTML = ''; }
+
+async function test1_GET_health() {
+  log('--- TEST 1: GET health check ---', 'info');
+  try {
+    const r = await fetch(WEBHOOK, {method:'GET'});
+    log('Status: ' + r.status + ' ' + r.statusText);
+    const text = await r.text();
+    log('Response: ' + text.substring(0,200));
+    try { logpre(JSON.parse(text)); log('✓ JSON parse OK', 'ok'); }
+    catch(e) { log('✗ Not valid JSON: ' + e.message, 'err'); }
+  } catch(e) { log('✗ Fetch error: ' + e.message, 'err'); }
+}
+
+async function test2_GET_with_data() {
+  log('--- TEST 2: GET with data param ---', 'info');
+  const testData = {category:'mult',difficulty:'easy',grade:'k3',mode:'quiz',pct:80,score:12,total:15,xpEarned:65,timer:false,bossMode:false,appVersion:'debug'};
+  try {
+    const url = WEBHOOK + '?data=' + encodeURIComponent(JSON.stringify(testData));
+    log('URL length: ' + url.length + ' chars');
+    log('URL: ' + url.substring(0,100) + '...');
+    const r = await fetch(url, {method:'GET'});
+    log('Status: ' + r.status);
+    const text = await r.text();
+    log('Response: ' + text.substring(0,200));
+    try {
+      const j = JSON.parse(text);
+      if(j.status === 'ok') log('✓ Data saved to Sheets!', 'ok');
+      else log('✗ Error: ' + j.message, 'err');
+    } catch(e) { log('✗ Not valid JSON: ' + e.message + ' | raw: ' + text.substring(0,100), 'err'); }
+  } catch(e) { log('✗ Fetch error: ' + e.message, 'err'); }
+}
+
+async function test3_POST() {
+  log('--- TEST 3: POST (original method) ---', 'info');
+  const testData = {category:'div',difficulty:'medium',grade:'k4',mode:'quiz',pct:100,score:15,total:15,xpEarned:105,timer:true,bossMode:false,appVersion:'debug'};
+  try {
+    const r = await fetch(WEBHOOK, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(testData)
+    });
+    log('Status: ' + r.status);
+    const text = await r.text();
+    log('Response: ' + text.substring(0,200));
+    try {
+      const j = JSON.parse(text);
+      if(j.status === 'ok') log('✓ POST works!', 'ok');
+      else log('✗ POST error: ' + j.message, 'err');
+    } catch(e) { log('✗ POST not valid JSON: ' + text.substring(0,100), 'err'); }
+  } catch(e) { log('✗ POST fetch error: ' + e.message, 'err'); }
+}
+
+async function test4_no_cors() {
+  log('--- TEST 4: GET no-cors mode ---', 'info');
+  try {
+    // no-cors doesn't let us read response but at least fires the request
+    await fetch(WEBHOOK + '?data=' + encodeURIComponent(JSON.stringify({category:'test',pct:99,appVersion:'debug-nocors'})), {
+      method: 'GET',
+      mode: 'no-cors'
+    });
+    log('✓ no-cors request fired (check Sheets manually)', 'ok');
+  } catch(e) { log('✗ no-cors error: ' + e.message, 'err'); }
+}
+
+async function test5_image_beacon() {
+  log('--- TEST 5: Image beacon (always works) ---', 'info');
+  try {
+    const data = {category:'beacon',pct:77,appVersion:'debug-beacon'};
+    const url = WEBHOOK + '?data=' + encodeURIComponent(JSON.stringify(data));
+    const img = new Image();
+    img.onload = img.onerror = () => log('✓ Beacon sent (check Sheets)', 'ok');
+    img.src = url;
+  } catch(e) { log('✗ Beacon error: ' + e.message, 'err'); }
+}
+
+async function runAll() {
+  clearLog();
+  log('Starting tests... ' + new Date().toLocaleTimeString(), 'info');
+  log('Webhook: ' + WEBHOOK.substring(0,60) + '...');
+  await test1_GET_health();
+  await new Promise(r => setTimeout(r, 500));
+  await test2_GET_with_data();
+  await new Promise(r => setTimeout(r, 500));
+  await test3_POST();
+  await new Promise(r => setTimeout(r, 500));
+  await test4_no_cors();
+  await new Promise(r => setTimeout(r, 500));
+  await test5_image_beacon();
+  log('--- DONE --- sprawdź Google Sheets czy cokolwiek się pojawiło', 'info');
+}
+</script>
+</body>
+</html>
