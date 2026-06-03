@@ -314,6 +314,15 @@ body.fs-large{font-size:1.1rem;}
 .rank-name{font-family:'Righteous',cursive;font-size:.9rem;margin-bottom:2px;}
 .rank-meta{font-size:.67rem;color:var(--mu);font-weight:600;}
 .rank-xp{font-family:'Righteous',cursive;font-size:.95rem;color:var(--pu);}
+/* LEADERBOARD TABS */
+.lb-tabs{display:flex;gap:6px;width:100%;margin-bottom:14px;overflow-x:auto;padding-bottom:3px;-ms-overflow-style:none;scrollbar-width:none;}
+.lb-tabs::-webkit-scrollbar{display:none;}
+.lb-tab{flex-shrink:0;padding:7px 14px;border:2px solid var(--sf);border-radius:99px;background:transparent;color:var(--mu);font-family:'Righteous',cursive;font-size:.76rem;cursor:pointer;transition:all .2s;}
+.lb-tab:active{background:var(--sf);}
+.lb-tab.act{border-color:var(--a2);color:var(--a2);background:#ffd93d10;}
+.lb-spin{text-align:center;padding:32px 0;color:var(--mu);font-size:.88rem;font-weight:700;}
+.lb-note{text-align:center;color:var(--mu);font-size:.7rem;font-weight:700;padding:10px 0;}
+.uid-badge{display:inline-flex;align-items:center;gap:5px;background:#4d96ff14;border:1px solid var(--a4);border-radius:99px;padding:3px 9px;font-family:'Righteous',cursive;font-size:.6rem;color:var(--a4);margin-top:2px;}
 /* CALENDAR */
 .cal-day{width:12px;height:12px;border-radius:3px;background:var(--sf);cursor:default;flex-shrink:0;}
 .cal-day.d1{background:#2d6e3a;}
@@ -467,6 +476,14 @@ body.fs-large{font-size:1.1rem;}
     <div class="avrow" id="avrow"></div>
     <div class="lbl" style="margin-bottom:7px">Klasa</div>
     <div class="cls-grid" id="clsgrid"></div>
+    <div id="mod-uid-row" class="hidden" style="margin-bottom:11px;">
+      <div class="lbl" style="margin-bottom:5px">Twój ID gracza</div>
+      <div style="background:var(--sf);border-radius:13px;padding:10px 13px;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:1.1rem">🆔</span>
+        <span id="mod-uid-val" style="font-family:'Righteous',cursive;font-size:.9rem;color:var(--a4);flex:1"></span>
+        <span style="font-size:.65rem;color:var(--mu);font-weight:700">niezmienialny</span>
+      </div>
+    </div>
     <div class="mbtns">
       <button class="mcan" onclick="closeModal()">Anuluj</button>
       <button class="mok" id="mod-ok" onclick="saveProf()">Utwórz!</button>
@@ -738,6 +755,10 @@ body.fs-large{font-size:1.1rem;}
   </div>
   <div class="stg-section">
     <div class="lbl">Profil</div>
+    <div id="stg-uid-row" class="stg-row" style="flex-direction:column;align-items:flex-start;gap:8px;">
+      <div><div class="stg-label">ID Gracza</div><div class="stg-desc" id="stg-uid-val">Brak — nie jesteś w rankingu globalnym</div></div>
+      <button class="mbtn" id="stg-join-btn" style="padding:11px;" onclick="joinLeaderboard()">🏆 Dołącz do rankingu globalnego</button>
+    </div>
     <button class="danger-btn" onclick="confirmReset()">🔄 Resetuj postęp profilu</button>
     <button class="danger-btn" onclick="confirmDelProf()">🗑 Usuń profil</button>
   </div>
@@ -757,7 +778,7 @@ body.fs-large{font-size:1.1rem;}
     </div>
     <div class="lbl" style="margin-top:14px;">Historia zmian</div>
     <div id="cl-list"></div>
-    <button class="mbtn" style="padding:11px;margin-top:4px;" onclick="showWhatsNew(true)">🎉 Pokaż nowości v6</button>
+    <button class="mbtn" style="padding:11px;margin-top:4px;" onclick="showWhatsNew(true)">🎉 Pokaż nowości v7</button>
   </div>
 
   <div style="text-align:center;font-size:.63rem;color:var(--mu);font-weight:700;padding-top:8px;">
@@ -770,8 +791,16 @@ body.fs-large{font-size:1.1rem;}
 <div class="screen hidden" id="srank">
 <div class="si">
   <div class="brow"><button class="bk" onclick="showScreen('sc')">←</button><span style="font-weight:700;color:var(--mu);font-size:.85rem">Powrót</span></div>
-  <div class="ttl" style="font-size:1.6rem;margin-bottom:4px;">🏆 Ranking</div>
-  <div class="sub">Rywalizacja między profilami</div>
+  <div class="ttl" style="font-size:1.6rem;margin-bottom:4px;">🏆 Ranking Globalny</div>
+  <div class="sub" id="rank-sub">Top gracze z całego świata</div>
+  <div class="lb-tabs">
+    <button class="lb-tab act" data-grade="all" onclick="loadLeaderboard('all')">🌍 Wszyscy</button>
+    <button class="lb-tab" data-grade="k1" onclick="loadLeaderboard('k1')">Klasa 1</button>
+    <button class="lb-tab" data-grade="k2" onclick="loadLeaderboard('k2')">Klasa 2</button>
+    <button class="lb-tab" data-grade="k3" onclick="loadLeaderboard('k3')">Klasa 3</button>
+    <button class="lb-tab" data-grade="k4" onclick="loadLeaderboard('k4')">Klasa 4</button>
+    <button class="lb-tab" data-grade="k5" onclick="loadLeaderboard('k5')">Klasa 5</button>
+  </div>
   <div id="rank-list" style="width:100%"></div>
 </div>
 </div>
@@ -830,6 +859,18 @@ function segAct(id,btn){const p=btn.closest('.seg');if(p)p.querySelectorAll('.se
 function showSettings(){
   document.getElementById('stg-sound').checked=STG.sound;
   applyTheme();applyFont();
+  const p=actProf();
+  const uidVal=document.getElementById('stg-uid-val');
+  const joinBtn=document.getElementById('stg-join-btn');
+  if(p&&p.userId){
+    uidVal.textContent='🆔 '+p.userId;
+    uidVal.style.color='var(--a4)';
+    joinBtn.classList.add('hidden');
+  }else{
+    uidVal.textContent='Brak — nie jesteś w rankingu globalnym';
+    uidVal.style.color='';
+    joinBtn.classList.remove('hidden');
+  }
   showScreen('sstg');
 }
 
@@ -874,22 +915,71 @@ let actPid = ld('actPid4',null);
 function getP(id){return profiles.find(p=>p.id===id);}
 function actProf(){return getP(actPid);}
 function sveP(){sv('profiles4',profiles);}
-function newProfile(name,avatar,cls){return{id:Date.now().toString(),name,avatar,cls,xp:0,streak:0,lastPlay:'',weakSpots:{},history:[],badges:[],totalSessions:0,bestPct:0,catsPlayed:[],legendDone:false,hadPerfect:false,improvedWeak:false,timerDone:false,bossKilled:false,dailySessions:{},dailyRewards:{},lastBossTrigger:0};}
+function newProfile(name,avatar,cls,userId=''){return{id:Date.now().toString(),userId,name,avatar,cls,xp:0,streak:0,lastPlay:'',weakSpots:{},history:[],badges:[],totalSessions:0,bestPct:0,catsPlayed:[],legendDone:false,hadPerfect:false,improvedWeak:false,timerDone:false,bossKilled:false,dailySessions:{},dailyRewards:{},lastBossTrigger:0};}
 
 /* ══ MODAL ══ */
 let selAv=AVTS[0], selCls='k3', editId=null;
-function openModal(){editId=null;document.getElementById('mod-ttl').textContent='👤 Nowy profil';document.getElementById('mod-ok').textContent='Utwórz!';document.getElementById('mn').value='';selAv=AVTS[0];selCls='k3';buildModalAv(0);buildModalCls();document.getElementById('mbg').classList.remove('hidden');setTimeout(()=>document.getElementById('mn').focus(),200);}
-function openEditModal(){const p=actProf();if(!p)return;editId=p.id;document.getElementById('mod-ttl').textContent='✏️ Edytuj profil';document.getElementById('mod-ok').textContent='Zapisz';document.getElementById('mn').value=p.name;selAv=p.avatar;selCls=p.cls||'k3';buildModalAv(getRank(p.xp||0).idx);buildModalCls();document.getElementById('mbg').classList.remove('hidden');setTimeout(()=>document.getElementById('mn').focus(),200);}
+function openModal(){editId=null;document.getElementById('mod-ttl').textContent='👤 Nowy profil';document.getElementById('mod-ok').textContent='Utwórz!';document.getElementById('mod-ok').disabled=false;document.getElementById('mn').value='';document.getElementById('mod-uid-row').classList.add('hidden');selAv=AVTS[0];selCls='k3';buildModalAv(0);buildModalCls();document.getElementById('mbg').classList.remove('hidden');setTimeout(()=>document.getElementById('mn').focus(),200);}
+function openEditModal(){const p=actProf();if(!p)return;editId=p.id;document.getElementById('mod-ttl').textContent='✏️ Edytuj profil';document.getElementById('mod-ok').textContent='Zapisz';document.getElementById('mod-ok').disabled=false;document.getElementById('mn').value=p.name;selAv=p.avatar;selCls=p.cls||'k3';buildModalAv(getRank(p.xp||0).idx);buildModalCls();const uidRow=document.getElementById('mod-uid-row');if(p.userId){document.getElementById('mod-uid-val').textContent=p.userId;uidRow.classList.remove('hidden');}else{uidRow.classList.add('hidden');}document.getElementById('mbg').classList.remove('hidden');setTimeout(()=>document.getElementById('mn').focus(),200);}
 function buildModalAv(rankIdx){const ar=document.getElementById('avrow');ar.innerHTML='';AVTS.forEach((a,i)=>{const unlocked=AV_UNLOCK[i]<=rankIdx;const d=document.createElement('div');d.className='avo'+(a===selAv?' s':'')+(unlocked?'':' locked');d.textContent=a;if(!unlocked){const lb=document.createElement('div');lb.className='lbdg';lb.textContent='🔒';d.appendChild(lb);}if(unlocked)d.onclick=()=>{document.querySelectorAll('.avo').forEach(x=>x.classList.remove('s'));d.classList.add('s');selAv=a;};ar.appendChild(d);});}
 function buildModalCls(){const cg=document.getElementById('clsgrid');cg.innerHTML='';Object.entries(CLS_META).forEach(([key,m])=>{const b=document.createElement('button');b.className='cls-opt'+(key===selCls?' s':'');b.dataset.c=key;b.innerHTML=m.icon+'<br><span style="font-size:.6rem">'+m.label+'</span>';b.onclick=()=>{document.querySelectorAll('.cls-opt').forEach(x=>x.classList.remove('s'));b.classList.add('s');selCls=key;};cg.appendChild(b);});}
 function closeModal(){document.getElementById('mbg').classList.add('hidden');}
-function saveProf(){const nm=document.getElementById('mn').value.trim();if(!nm)return;if(editId){const p=getP(editId);if(!p)return;p.name=nm;p.avatar=selAv;p.cls=selCls;sveP();closeModal();renderP();refreshXP();buildCatList();}else{const p=newProfile(nm,selAv,selCls);profiles.push(p);sveP();closeModal();renderP();}}
+async function saveProf(){
+  const nm=document.getElementById('mn').value.trim();if(!nm)return;
+  if(editId){
+    const p=getP(editId);if(!p)return;
+    p.name=nm;p.avatar=selAv;p.cls=selCls;
+    sveP();closeModal();renderP();refreshXP();buildCatList();
+    if(p.userId)syncLeaderboard(p);
+  }else{
+    const btn=document.getElementById('mod-ok');
+    btn.disabled=true;btn.textContent='⏳ Sprawdzam...';
+    let userId;
+    try{userId=await genUniqueUserId(nm);}
+    catch(e){userId=nm.replace(/\s+/g,'').slice(0,8)+'#'+String(Math.floor(1000+Math.random()*9000));}
+    const p=newProfile(nm,selAv,selCls,userId);
+    profiles.push(p);sveP();closeModal();renderP();
+    setTimeout(()=>showToastBox('🆔','ID: '+userId,'Zapamiętaj — to Twój unikalny identyfikator!'),400);
+  }
+}
+async function genUniqueUserId(name){
+  const base=(name.split(' ')[0]||'Gracz').replace(/[^a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g,'').slice(0,10)||'Gracz';
+  if(!window._db)return base+'#'+String(Math.floor(1000+Math.random()*9000));
+  for(let i=0;i<6;i++){
+    const uid=base+'#'+String(Math.floor(1000+Math.random()*9000));
+    try{const doc=await window._db.collection('leaderboard').doc(uid).get();if(!doc.exists)return uid;}
+    catch(e){return base+'#'+String(Math.floor(1000+Math.random()*9000));}
+  }
+  return base+'#'+Date.now().toString().slice(-4);
+}
+async function joinLeaderboard(){
+  const p=actProf();if(!p||p.userId)return;
+  if(!confirm('Dołączyć do globalnego rankingu?\nTwój nick będzie widoczny dla innych graczy.'))return;
+  showToast('⏳ Generuję ID...');
+  try{
+    const uid=await genUniqueUserId(p.name);
+    p.userId=uid;sveP();renderP();
+    syncLeaderboard(p);
+    showToastBox('🆔','ID: '+uid,'Jesteś teraz w globalnym rankingu!');
+  }catch(e){showToast('❌ Błąd — spróbuj ponownie');}
+}
+function syncLeaderboard(p){
+  if(!p||!p.userId||!window._db)return;
+  try{
+    window._db.collection('leaderboard').doc(p.userId).set({
+      name:p.name,cls:p.cls||'k3',xp:p.xp||0,
+      streak:p.streak||0,avatar:p.avatar||'😊',
+      badges:(p.badges||[]).length,
+      lastUpdated:new Date().toISOString()
+    },{merge:true});
+  }catch(e){}
+}
 
 /* ══ RENDER PROFILES ══ */
 function renderP(){
   const list=document.getElementById('plist');list.innerHTML='';
   if(!profiles.length){list.innerHTML='<div style="text-align:center;color:var(--mu);font-weight:700;padding:18px 0">Dodaj pierwszy profil!</div>';}
-  profiles.forEach(p=>{const rk=getRank(p.xp||0);const cm=CLS_META[p.cls||'k3'];const bdgCnt=(p.badges||[]).length;const isDone=getDGProgress(p)>=(STG.dailyGoal||1);const div=document.createElement('div');div.className='pcard'+(p.id===actPid?' sel':'')+(isDone?' goal-done':'');div.innerHTML='<div class="pav">'+p.avatar+'</div><div class="pinfo"><div class="pname">'+p.name+'</div><div class="pmeta" style="color:'+cm.hex+'">'+cm.label+'</div><div class="pmeta">'+rk.n+(bdgCnt?' · 🏅 '+bdgCnt:'')+' · 🔥 '+(p.streak||0)+'</div></div><div class="pxp">'+(p.xp||0)+' XP</div><button class="pdel" onclick="delP(event,\''+p.id+'\')">🗑</button>';div.onclick=(e)=>{if(e.target.closest('.pdel'))return;actPid=p.id;sv('actPid4',actPid);renderP();document.getElementById('pnxt').disabled=false;document.getElementById('pnxt').style.opacity='1';};list.appendChild(div);});
+  profiles.forEach(p=>{const rk=getRank(p.xp||0);const cm=CLS_META[p.cls||'k3'];const bdgCnt=(p.badges||[]).length;const isDone=getDGProgress(p)>=(STG.dailyGoal||1);const div=document.createElement('div');div.className='pcard'+(p.id===actPid?' sel':'')+(isDone?' goal-done':'');div.innerHTML='<div class="pav">'+p.avatar+'</div><div class="pinfo"><div class="pname">'+p.name+'</div><div class="pmeta" style="color:'+cm.hex+'">'+cm.label+'</div><div class="pmeta">'+rk.n+(bdgCnt?' · 🏅 '+bdgCnt:'')+' · 🔥 '+(p.streak||0)+'</div>'+(p.userId?'<div class="uid-badge">🆔 '+p.userId+'</div>':'')+'</div><div class="pxp">'+(p.xp||0)+' XP</div><button class="pdel" onclick="delP(event,\''+p.id+'\')">🗑</button>';div.onclick=(e)=>{if(e.target.closest('.pdel'))return;actPid=p.id;sv('actPid4',actPid);renderP();document.getElementById('pnxt').disabled=false;document.getElementById('pnxt').style.opacity='1';};list.appendChild(div);});
   const nb=document.getElementById('pnxt');if(actPid&&profiles.some(p=>p.id===actPid)){nb.disabled=false;nb.style.opacity='1';}else{nb.disabled=true;nb.style.opacity='.4';}
 }
 function delP(e,id){e.stopPropagation();if(!confirm('Usunąć profil? Postęp zostanie utracony.'))return;profiles=profiles.filter(p=>p.id!==id);if(actPid===id)actPid=null;sveP();sv('actPid4',actPid);renderP();}
@@ -1471,8 +1561,9 @@ function showRes(){
       });
     }
     if(typeof window._logSession === 'function') {
-      window._logSession(_sessionData);
+      window._logSession({..._sessionData, userId: p.userId||''});
     }
+    syncLeaderboard(p);
 
     const nbb=document.getElementById('new-bdg-box'),nbl=document.getElementById('new-bdg-list');nbl.innerHTML='';
     if(newBdgs.length){nbb.classList.remove('hidden');newBdgs.forEach(b=>{const s=document.createElement('div');s.className='bdg new-bdg';s.textContent=b.ico+' '+b.name;nbl.appendChild(s);});setTimeout(()=>qUnlock(newBdgs.map(b=>({ico:b.ico,label:'Nowa odznaka: '+b.name}))),800);}
@@ -1528,9 +1619,82 @@ function showBadges(){
 
 /* ══ RANKING ══ */
 function showRanking(){
-  const list=document.getElementById('rank-list');list.innerHTML='';
-  const sorted=[...profiles].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  showScreen('srank');
+  loadLeaderboard('all');
+}
+
+async function loadLeaderboard(grade){
+  document.querySelectorAll('.lb-tab').forEach(t=>t.classList.toggle('act',t.dataset.grade===grade));
+  const list=document.getElementById('rank-list');
+  list.innerHTML='<div class="lb-spin">⏳ Ładowanie rankingu...</div>';
   const medals=['🥇','🥈','🥉'];
+  const actP=actProf();
+
+  if(window._db){
+    try{
+      let snap;
+      if(grade==='all'){
+        snap=await window._db.collection('leaderboard').orderBy('xp','desc').limit(50).get();
+      }else{
+        try{
+          snap=await window._db.collection('leaderboard').where('cls','==',grade).orderBy('xp','desc').limit(50).get();
+        }catch(e){
+          // composite index not yet built — client-side filter
+          const all=await window._db.collection('leaderboard').orderBy('xp','desc').limit(200).get();
+          snap={docs:all.docs.filter(d=>d.data().cls===grade),empty:all.docs.filter(d=>d.data().cls===grade).length===0};
+        }
+      }
+      list.innerHTML='';
+      if(snap.empty){
+        list.innerHTML='<div style="text-align:center;color:var(--mu);font-weight:700;padding:28px 0">Brak graczy w tym rankingu 🌟<br><span style="font-size:.74rem">Graj, żeby się tu pojawić!</span></div>';
+        _appendLocalHint(list,actP,grade);
+        return;
+      }
+      snap.docs.forEach((doc,i)=>{
+        const d=doc.data();
+        const isMe=actP&&actP.userId===doc.id;
+        const cm=CLS_META[d.cls||'k3'];
+        const rk=getRank(d.xp||0);
+        const div=document.createElement('div');
+        div.className='rank-item rank-'+(i+1);
+        if(isMe)div.style.cssText='border-color:var(--a4);background:linear-gradient(135deg,#4d96ff0a,var(--cb));';
+        div.innerHTML='<div class="rank-pos">'+(medals[i]||(i+1)+'.')+'</div>'
+          +'<div class="rank-av">'+(d.avatar||'😊')+'</div>'
+          +'<div class="rank-info">'
+            +'<div class="rank-name">'+d.name+(isMe?' <span style="color:var(--a4);font-size:.7rem">(Ty)</span>':'')+'</div>'
+            +'<div class="rank-meta" style="color:'+cm.hex+'">'+cm.label+' · '+rk.n+'</div>'
+            +'<div class="rank-meta">🔥 '+(d.streak||0)+' dni · 🏅 '+(d.badges||0)+' odznak</div>'
+          +'</div>'
+          +'<div class="rank-xp">'+(d.xp||0)+' XP</div>';
+        list.appendChild(div);
+      });
+      _appendLocalHint(list,actP,grade);
+      return;
+    }catch(e){/* fall through to local */}
+  }
+
+  // offline / no Firestore — local ranking
+  _showLocalRanking(list,medals,actP,grade);
+}
+
+function _appendLocalHint(list,actP,grade){
+  if(!actP)return;
+  if(!actP.userId){
+    const n=document.createElement('div');
+    n.className='lb-note';
+    n.innerHTML='<a href="#" onclick="joinLeaderboard();return false;" style="color:var(--a4);text-decoration:none;">🏆 Dołącz do globalnego rankingu</a>';
+    list.appendChild(n);
+  }
+}
+
+function _showLocalRanking(list,medals,actP,grade){
+  let sorted=[...profiles].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  if(grade!=='all')sorted=sorted.filter(p=>p.cls===grade);
+  list.innerHTML='';
+  if(!sorted.length){
+    list.innerHTML='<div style="text-align:center;color:var(--mu);font-weight:700;padding:28px 0">Brak profili w tej klasie.</div>';
+    return;
+  }
   sorted.forEach((p,i)=>{
     const rk=getRank(p.xp||0),cm=CLS_META[p.cls||'k3'],isMe=p.id===actPid;
     const div=document.createElement('div');div.className='rank-item rank-'+(i+1);
@@ -1538,9 +1702,9 @@ function showRanking(){
     div.innerHTML='<div class="rank-pos">'+(medals[i]||(i+1)+'.')+'</div><div class="rank-av">'+p.avatar+'</div><div class="rank-info"><div class="rank-name">'+p.name+(isMe?' <span style="color:var(--a4);font-size:.7rem">(Ty)</span>':'')+'</div><div class="rank-meta" style="color:'+cm.hex+'">'+cm.label+' · '+rk.n+'</div><div class="rank-meta">🔥 '+(p.streak||0)+' dni · 🃏 '+(p.totalSessions||0)+' sesji</div></div><div class="rank-xp">'+(p.xp||0)+' XP</div>';
     list.appendChild(div);
   });
-  if(!sorted.length)list.innerHTML='<div style="text-align:center;color:var(--mu);font-weight:700;padding:24px 0">Brak profili.</div>';
-  if(sorted.length===1){const n=document.createElement('div');n.style.cssText='text-align:center;color:var(--mu);font-size:.8rem;font-weight:700;padding:12px 0;';n.textContent='Dodaj więcej profili, żeby rywalizować! 👨‍👩‍👧‍👦';list.appendChild(n);}
-  showScreen('srank');
+  const note=document.createElement('div');note.className='lb-note';note.textContent='📡 Offline — lokalny ranking';
+  list.appendChild(note);
+  _appendLocalHint(list,actP,grade);
 }
 
 /* ══ CALENDAR ══ */
@@ -1589,8 +1753,21 @@ function closeIdea(){document.getElementById('idea-mbg').classList.add('hidden')
 function sendIdea(){const name=document.getElementById('idea-name').value.trim();const text=document.getElementById('idea-text').value.trim();if(!text){showToast('Wpisz treść pomysłu.');return;}const sub=encodeURIComponent('Pomysł: Matematyka Fiszki');const body=encodeURIComponent((name?'Od: '+name+'\n\n':'')+text);window.open('mailto:matmaApp@gmail.com?subject='+sub+'&body='+body,'_blank');closeIdea();showToast('Pomysł wysłany! 🙏');}
 
 
-const APP_VERSION = 'v6';
+const APP_VERSION = 'v7';
 const CHANGELOG = [
+  {
+    version: 'v7',
+    date: '2026-06-03',
+    title: 'Globalny Ranking',
+    changes: [
+      '🏆 Globalny Leaderboard — rywalizuj z uczniami z całego świata!',
+      '🆔 Unikalny ID gracza — format Imię#1234, sprawdzany pod kątem unikalności przy tworzeniu profilu',
+      '🌍 Zakładki rankingu: Wszyscy / Klasa 1 / Klasa 2 / Klasa 3 / Klasa 4 / Klasa 5',
+      '🔄 Automatyczny sync postępu po każdej sesji (XP, streak, odznaki)',
+      '📡 Offline fallback — lokalny ranking gdy brak internetu',
+      '⚙️ Przycisk "Dołącz do rankingu" w Ustawieniach dla istniejących profili',
+    ]
+  },
   {
     version: 'v6',
     date: '2026-06-01',
